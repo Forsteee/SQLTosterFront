@@ -14,6 +14,12 @@ import Menu from '@material-ui/core/Menu';
 import logo from '../../images/logo.png';
 import {Avatar} from "@material-ui/core";
 import {inspect} from "util";
+import Link from '@material-ui/core/Link';
+import HomeIcon from '@material-ui/icons/Home';
+import WhatshotIcon from '@material-ui/icons/Whatshot';
+import GrainIcon from '@material-ui/icons/Grain';
+import Grid from '@material-ui/core/Grid';
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -23,18 +29,36 @@ const useStyles = makeStyles((theme: Theme) =>
             marginRight: theme.spacing(2),
         },
         title: {
-            flexGrow: 1,
+
         },
         colored:{
             backgroundColor: '#2F2E33',
         },
         logo:{
             margin: 'auto',
+            height: '50px',
+            width:'50px',
         },
         logotype:{
-            position: 'absolute',
-            left: '30%',
-            top: '70%',
+            height: '100%',
+            display: 'flex',
+            alignItems:'center',
+        },
+        height50px:{
+            minHeight: '50px',
+            height:'50px',
+
+        },
+        linkcenterp:{
+
+        },
+        linq:{
+            paddingRight:'',// доделать отступы между элементами
+        },
+        icon: {
+            marginRight: theme.spacing(0.5),
+            width: 20,
+            height: 20,
         },
     }),
 );
@@ -58,33 +82,49 @@ export default function MenuAppBar() {
     };
 
     return (
-        <div className={classes.root}>
-            {/*<FormGroup>
+
+            <AppBar position="static" className={classes.colored}>
+                {/*<FormGroup>
                 <FormControlLabel
                     control={<Switch checked={auth} onChange={handleChange} aria-label="login switch" />}
                     label={auth ? 'Logout' : 'Login'}
                 />
             </FormGroup>*/}
-            <AppBar position="static" className={classes.colored}>
-                <Toolbar>
+                <Toolbar className={classes.height50px}>
+                    <Grid container direction="row" justify="space-evenly" alignItems="center">
+                        <Grid item>
                     <div className={classes.logotype}>
-                    <Avatar src={logo} variant="square" className={classes.logo} />
+                        <Avatar src={logo} variant="square" className={classes.logo} />
+                        <Typography variant="h6" className={classes.title}>
+                            SQL Toster
+                        </Typography>
                     </div>
-                    <Typography variant="h6" className={classes.title}>
-                        SQL Toster
-                    </Typography>
-
-                        <div>
-                            <IconButton
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                onClick={handleMenu}
-                                color="inherit"
-                            >
-                                <AccountCircle />
-                            </IconButton>
-                            {auth && (
+                        </Grid>
+                        <Grid item className={classes.linkcenterp}>
+                        <Link color="inherit" href="/" className={classes.linq}>
+                            <WhatshotIcon className={classes.icon} />
+                            Курсы
+                        </Link>
+                        <Link color="inherit" href="/" className={classes.linq}>
+                            <HomeIcon className={classes.icon} />
+                            Библиотека
+                        </Link>
+                        <Link color="inherit" href="/">
+                            <GrainIcon className={classes.icon} />
+                            О нас
+                        </Link>
+                            </Grid>
+                    <div>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                            color="inherit"
+                        >
+                            <AccountCircle />
+                        </IconButton>
+                        {auth && (
                             <Menu // выпадающиЙ список (будем менять в завиимости от того вошёл пользователь или нет)
                                 id="menu-appbar"
                                 anchorEl={anchorEl}
@@ -103,10 +143,10 @@ export default function MenuAppBar() {
                                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                                 <MenuItem onClick={handleClose}>My account</MenuItem>
                             </Menu>  )}
-                        </div>
-
+                    </div>
+                    </Grid>
                 </Toolbar>
+
             </AppBar>
-        </div>
     );
 }

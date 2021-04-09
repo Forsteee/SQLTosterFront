@@ -7,11 +7,10 @@ import Link from '@material-ui/core/Link';
 
 function Copyright() {
     return (
-        <Typography variant="body2" color="textSecondary">
+        <Typography variant="body2" color="inherit">
             {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-            </Link>{' '}
+            SQL Toster
+            {' '}
             {new Date().getFullYear()}
             {'.'}
         </Typography>
@@ -31,9 +30,10 @@ const useStyles = makeStyles((theme) => ({
     footer: {
         padding: theme.spacing(3, 2),
         marginTop: 'auto',
-        backgroundColor:
-            theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
-    },
+        backgroundColor:'#2F2E33',
+        color:'white',
+        textAlign:'center',
+    }
 }));
 
 export default function StickyFooter() {
@@ -42,19 +42,9 @@ export default function StickyFooter() {
     return (
         <div className={classes.root}>
             <CssBaseline />
-            <Container component="main" className={classes.main} maxWidth="sm">
-                <Typography variant="h2" component="h1" gutterBottom>
-                    Sticky footer
-                </Typography>
-                <Typography variant="h5" component="h2" gutterBottom>
-                    {'Pin a footer to the bottom of the viewport.'}
-                    {'The footer will move as the main element of the page grows.'}
-                </Typography>
-                <Typography variant="body1">Sticky footer placeholder.</Typography>
-            </Container>
             <footer className={classes.footer}>
                 <Container maxWidth="sm">
-                    <Typography variant="body1">My sticky footer can be found here.</Typography>
+                    <Typography variant="body1">пиу-пиу</Typography>
                     <Copyright />
                 </Container>
             </footer>
