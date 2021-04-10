@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import  NavMenu  from './header/NavMenu';
 import  Footer  from './footer/Footer';
 const mainC = {
-    minHeight: '88vh',
+    minHeight: '100vh',
 }
 export class Layout extends Component {
     static displayName = Layout.name;
