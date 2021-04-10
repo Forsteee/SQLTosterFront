@@ -15,10 +15,13 @@ import logo from '../../images/logo.png';
 import {Avatar} from "@material-ui/core";
 import {inspect} from "util";
 import Link from '@material-ui/core/Link';
-import HomeIcon from '@material-ui/icons/Home';
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
-import GrainIcon from '@material-ui/icons/Grain';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
+import Button from '@material-ui/core/Button';
+//import styles = module
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -53,12 +56,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
         },
         linq:{
-            paddingRight:'',// доделать отступы между элементами
+            paddingRight:'15px',// доделать отступы между элементами
         },
         icon: {
             marginRight: theme.spacing(0.5),
             width: 20,
             height: 20,
+        },
+        button: {
+            margin: theme.spacing(1),
         },
     }),
 );
@@ -82,7 +88,6 @@ export default function MenuAppBar() {
     };
 
     return (
-
             <AppBar position="static" className={classes.colored}>
                 {/*<FormGroup>
                 <FormControlLabel
@@ -96,22 +101,28 @@ export default function MenuAppBar() {
                     <div className={classes.logotype}>
                         <Avatar src={logo} variant="square" className={classes.logo} />
                         <Typography variant="h6" className={classes.title}>
-                            SQL Toster
+                            <Hidden xsDown>SQL Toster</Hidden>
                         </Typography>
                     </div>
                         </Grid>
                         <Grid item className={classes.linkcenterp}>
                         <Link color="inherit" href="/" className={classes.linq}>
-                            <WhatshotIcon className={classes.icon} />
-                            Курсы
+                            <IconButton color="inherit">
+                                <WhatshotIcon className={classes.icon}/>
+                                <Typography variant="body1"><Hidden xsDown>Курсы</Hidden></Typography>
+                            </IconButton>
                         </Link>
                         <Link color="inherit" href="/" className={classes.linq}>
-                            <HomeIcon className={classes.icon} />
-                            Библиотека
+                            <IconButton color="inherit">
+                            <LocalLibraryIcon className={classes.icon} />
+                                <Typography variant="body1"><Hidden xsDown>Библиотека</Hidden></Typography>
+                            </IconButton>
                         </Link>
                         <Link color="inherit" href="/">
-                            <GrainIcon className={classes.icon} />
-                            О нас
+                            <IconButton color="inherit">
+                            <InfoOutlinedIcon className={classes.icon} />
+                                <Typography variant="body1"><Hidden xsDown>О нас</Hidden></Typography>
+                            </IconButton>
                         </Link>
                             </Grid>
                     <div>
@@ -146,7 +157,6 @@ export default function MenuAppBar() {
                     </div>
                     </Grid>
                 </Toolbar>
-
             </AppBar>
     );
 }

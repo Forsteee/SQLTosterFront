@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
 import  NavMenu  from './header/NavMenu';
 import  Footer  from './footer/Footer';
-//import './Layout.css'
-
+const mainC = {
+    minHeight: '88vh',
+}
 export class Layout extends Component {
     static displayName = Layout.name;
-
     render () {
         return (
             <div>
-                <NavMenu />
-                <div className="main-content">
-                    dfsdfsdf
+                <NavMenu/>
+                <div className="main-content" style={mainC}>
                     {this.props.children}
                 </div>
-                <Footer />
+                <Footer/>
             </div>
         );
     }
