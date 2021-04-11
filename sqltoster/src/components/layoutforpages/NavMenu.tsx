@@ -20,7 +20,7 @@ import WhatshotIcon from '@material-ui/icons/Whatshot';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
-import Button from '@material-ui/core/Button';
+import  MenuAuth from './Authmenu'
 //import styles = module
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -126,17 +126,18 @@ export default function MenuAppBar() {
                         </Link>
                             </Grid>
                     <div>
-                        <IconButton
+                        <MenuAuth/>
+                        {/*<IconButton
                             aria-label="account of current user"
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             onClick={handleMenu}
                             color="inherit"
                         >
-                            <AccountCircle />
+                            <AccountCircle/>
                         </IconButton>
-                        {auth && (
-                            <Menu // выпадающиЙ список (будем менять в завиимости от того вошёл пользователь или нет)
+                          {auth && (
+                           <Menu // выпадающиЙ список (будем менять в завиимости от того вошёл пользователь или нет)
                                 id="menu-appbar"
                                 anchorEl={anchorEl}
                                 anchorOrigin={{
@@ -153,7 +154,8 @@ export default function MenuAppBar() {
                             >
                                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                                 <MenuItem onClick={handleClose}>My account</MenuItem>
-                            </Menu>  )}
+                            </Menu>
+                        )}*/}
                     </div>
                     </Grid>
                 </Toolbar>

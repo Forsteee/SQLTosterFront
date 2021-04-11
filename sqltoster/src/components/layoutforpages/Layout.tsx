@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
-import  NavMenu  from './header/NavMenu';
-import  Footer  from './footer/Footer';
+import  NavMenu  from './NavMenu';
+import  Footer  from './Footer';
 const mainC = {
     minHeight: '100vh',
+}
+const root = {
+
 }
 export class Layout extends Component {
     static displayName = Layout.name;
     render () {
         return (
-            <div>
+            <div style={root}>
                 <NavMenu/>
                 <div className="main-content" style={mainC}>
                     {this.props.children}
