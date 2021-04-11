@@ -99,9 +99,9 @@ export default function MenuAppBar() {
                     <Grid container direction="row" justify="space-evenly" alignItems="center">
                         <Grid item>
                     <div className={classes.logotype}>
-                        <Avatar src={logo} variant="square" className={classes.logo} />
+                        <Link color="inherit" href='/'><Avatar src={logo} variant="square" className={classes.logo} /></Link>
                         <Typography variant="h6" className={classes.title}>
-                            <Hidden xsDown>SQL Toster</Hidden>
+                            <Link color="inherit" href='/' underline='none'><Hidden xsDown>SQL Toster</Hidden></Link>
                         </Typography>
                     </div>
                         </Grid>
@@ -127,35 +127,6 @@ export default function MenuAppBar() {
                             </Grid>
                     <div>
                         <MenuAuth/>
-                        {/*<IconButton
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleMenu}
-                            color="inherit"
-                        >
-                            <AccountCircle/>
-                        </IconButton>
-                          {auth && (
-                           <Menu // выпадающиЙ список (будем менять в завиимости от того вошёл пользователь или нет)
-                                id="menu-appbar"
-                                anchorEl={anchorEl}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={open}
-                                onClose={handleClose}
-                            >
-                                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                <MenuItem onClick={handleClose}>My account</MenuItem>
-                            </Menu>
-                        )}*/}
                     </div>
                     </Grid>
                 </Toolbar>

@@ -3,22 +3,14 @@ import {createStyles, makeStyles, Theme, withStyles} from '@material-ui/core/sty
 import Button from '@material-ui/core/Button';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
-import SendIcon from '@material-ui/icons/Send';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Input from '@material-ui/core/Input';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -163,7 +155,7 @@ export default function CustomizedMenus() {
                         className={classes.btnG}
                     >
                         <Button>Войти</Button>
-                        <Button>Регистрация</Button>
+                        <Button href='/registration'>Регистрация</Button>
                     </ButtonGroup>
                 </StyledMenuItem>
             </StyledMenu>
