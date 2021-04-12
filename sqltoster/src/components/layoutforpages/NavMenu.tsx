@@ -18,6 +18,7 @@ import Link from '@material-ui/core/Link';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import Help from '@material-ui/icons/Help';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import  MenuAuth from './Authmenu'
@@ -56,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
         },
         linq:{
-            paddingRight:'15px',// доделать отступы между элементами
+            paddingRight:'11px',// доделать отступы между элементами
         },
         icon: {
             marginRight: theme.spacing(0.5),
@@ -106,22 +107,22 @@ export default function MenuAppBar() {
                     </div>
                         </Grid>
                         <Grid item className={classes.linkcenterp}>
-                        <Link color="inherit" href="/" className={classes.linq}>
+                        <Link color="inherit" href="/mycourses" className={classes.linq}>
                             <IconButton color="inherit">
                                 <WhatshotIcon className={classes.icon}/>
-                                <Typography variant="body1"><Hidden xsDown>Курсы</Hidden></Typography>
+                                <Typography variant="body1"><Hidden xsDown>Мои курсы</Hidden></Typography>
                             </IconButton>
                         </Link>
                         <Link color="inherit" href="/" className={classes.linq}>
                             <IconButton color="inherit">
                             <LocalLibraryIcon className={classes.icon} />
-                                <Typography variant="body1"><Hidden xsDown>Библиотека</Hidden></Typography>
+                                <Typography variant="body1"><Hidden xsDown>Материал</Hidden></Typography>
                             </IconButton>
                         </Link>
                         <Link color="inherit" href="/">
                             <IconButton color="inherit">
-                            <InfoOutlinedIcon className={classes.icon} />
-                                <Typography variant="body1"><Hidden xsDown>О нас</Hidden></Typography>
+                            <Help className={classes.icon} />
+                                <Typography variant="body1"><Hidden xsDown>FAQ</Hidden></Typography>
                             </IconButton>
                         </Link>
                             </Grid>
