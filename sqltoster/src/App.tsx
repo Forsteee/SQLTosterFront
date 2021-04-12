@@ -5,6 +5,8 @@ import { Layout } from './components/layoutforpages/Layout';
 import  Registration  from './components/Registration';
 import Home from './components/Home';
 import MyCourses from "./components/Mycourses";
+import FAQ from "./components/FAQ";
+import Library from "./components/Library";
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
           <Route exact path='/' component={Home} />
           <Route path='/registration' component={Registration} />
           <Route path='/mycourses' component={MyCourses} />
+          <Route path='/faq' component={FAQ} />
+          <Route path='/library' component={Library} />
       </Layout>
   );
 }
