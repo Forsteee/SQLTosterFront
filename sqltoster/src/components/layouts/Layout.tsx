@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import  NavMenu  from './NavMenu';
+import  NavMenu  from './Header';
 import  Footer  from './Footer';
 const mainC = {
     minHeight: '100vh',

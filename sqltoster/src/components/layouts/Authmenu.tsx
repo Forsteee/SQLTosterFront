@@ -11,6 +11,9 @@ import Input from '@material-ui/core/Input';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+import Switch from '@material-ui/core/Switch';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -102,8 +105,12 @@ export default function CustomizedMenus() {
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
+    const auth= false;
 
     return (
+        <div>
+
+        {!auth && (
         <div>
             <IconButton
                 aria-label="account of current user"
@@ -159,6 +166,45 @@ export default function CustomizedMenus() {
                     </ButtonGroup>
                 </StyledMenuItem>
             </StyledMenu>
+        </div>
+        )}
+
+    {auth && (
+        <div>
+            <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleClick}
+                color="inherit"
+            >
+                <AccountCircle/>
+            </IconButton>
+            <StyledMenu
+                id="customized-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+            >
+                <StyledMenuItem>
+                    <ButtonGroup
+                        orientation="vertical"
+                        size='small'
+                        color="inherit"
+                        variant="text"
+                        className={classes.btnG}
+                    >
+                        <Button>Профиль</Button>
+                        <Button>Настройки</Button>
+                        <Button>Мои задания</Button>
+                        <Button>Уведомления</Button>
+                        <Button>Выход</Button>
+                    </ButtonGroup>
+                </StyledMenuItem>
+            </StyledMenu>
+        </div>
+    )}
         </div>
     );
 }

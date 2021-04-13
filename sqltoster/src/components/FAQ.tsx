@@ -10,6 +10,7 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ChangingButton,{Values} from "./layouts/Changingbutton";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,13 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
             textAlign:'center',
             paddingTop:'1%',
 
-        },
-        paper: {
-            padding: theme.spacing(1),
-            textAlign: 'center',
-            color: theme.palette.text.secondary,
-            whiteSpace: 'nowrap',
-            marginBottom: theme.spacing(1),
         },
         btnG:{
             textAlign:'center',
@@ -48,11 +42,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function FAQ() {
     const classes = useStyles();
-    const [flag, setFlag] = React.useState(true);
-    const handleClick = () => {
-        setFlag(!flag);
-    };
+    /*const [value, setValue] = React.useState('1');
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setValue((event.target as HTMLInputElement).value);
+    };*/
+
     const messege = 'Не важно, с какой скоростью ты движешься к своей цели — главное не останавливаться. Конфуций';
+
+    const section = ['1','2'];
 
     return (
         <div className={classes.root}>
@@ -62,27 +60,22 @@ export default function FAQ() {
                 </Typography>
                 <Grid container spacing={3} className={classes.faq}>
                     <Grid item xs={4}>
-                        <Paper className={classes.paper}>
-                            <ButtonGroup
+                            {/*<ButtonGroup
                                 orientation="vertical"
                                 aria-label="vertical contained primary button group"
-                                variant="contained"
                                 className={classes.btnG}
-                            >
-                                <Button
-                                    onClick={handleClick}
-                                    color={flag ? "default" : "primary"}
+                            >*/}
+                                <ChangingButton elements={section}/>
+                                <Button>{Values[0]}</Button>
+                                {/*<Button
                                 >Раздел 1</Button>
                                 <Button
-                                    onClick={handleClick}
-                                    color={flag ? "default" : "primary"}
                                 >Раздел 2</Button>
                                 <Button
                                     onClick={handleClick}
                                     color={flag ? "default" : "primary"}
-                                >Раздел 3</Button>
-                            </ButtonGroup>
-                        </Paper>
+                                >Раздел 3</Button>*/}
+                           {/* </ButtonGroup>*/}
                     </Grid>
                     <Grid item xs={8}>
                         <Accordion>

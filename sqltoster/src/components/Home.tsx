@@ -2,15 +2,10 @@ import React from 'react';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import Grid from '@material-ui/core/Grid';
-import Link from "@material-ui/core/Link";
-import {Avatar} from "@material-ui/core";
-import Hidden from "@material-ui/core/Hidden";
 import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles((theme: Theme) =>

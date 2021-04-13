@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
 import './App.css';
-import { Layout } from './components/layoutforpages/Layout';
+import { Layout } from './components/layouts/Layout';
 import  Registration  from './components/Registration';
 import Home from './components/Home';
 import MyCourses from "./components/Mycourses";
