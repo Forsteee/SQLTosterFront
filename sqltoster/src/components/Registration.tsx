@@ -58,6 +58,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
     const classes = useStyles();
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        alert('clicked');
+        //numberSectionActive = (event.target as HTMLInputElement).value;
+    };
     return (
         <Container component="main" maxWidth="sm" className={classes.container}>
             <CssBaseline />
@@ -120,6 +124,7 @@ export default function SignUp() {
                         variant="outlined"
                         color="default"
                         className={classes.submit}
+                        onClick={handleClick}
                     >
                        Зарегистрироваться
                     </Button>

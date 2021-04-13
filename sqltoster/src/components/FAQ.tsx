@@ -4,13 +4,8 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ChangingButton,{Values} from "./layouts/Changingbutton";
+import ChangingButton,{numberSectionActive} from "./layouts/Changingbutton";
+import AccordionList from "./layouts/Accordionlist";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -42,15 +37,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function FAQ() {
     const classes = useStyles();
-    /*const [value, setValue] = React.useState('1');
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setValue((event.target as HTMLInputElement).value);
-    };*/
-
-    const messege = 'Не важно, с какой скоростью ты движешься к своей цели — главное не останавливаться. Конфуций';
 
     const section = ['1','2'];
+    const sectionItem = ({title:'1',content:'2'});
+    const sectionList = [sectionItem,sectionItem,sectionItem]
 
     return (
         <div className={classes.root}>
@@ -60,38 +50,19 @@ export default function FAQ() {
                 </Typography>
                 <Grid container spacing={3} className={classes.faq}>
                     <Grid item xs={4}>
+                        <Paper elevation={3}>
                             {/*<ButtonGroup
                                 orientation="vertical"
                                 aria-label="vertical contained primary button group"
                                 className={classes.btnG}
                             >*/}
                                 <ChangingButton elements={section}/>
-                                <Button>{Values[0]}</Button>
-                                {/*<Button
-                                >Раздел 1</Button>
-                                <Button
-                                >Раздел 2</Button>
-                                <Button
-                                    onClick={handleClick}
-                                    color={flag ? "default" : "primary"}
-                                >Раздел 3</Button>*/}
+                           {/* <Typography component="div" variant="h5" className={classes.headT}>{numberSectionActive}+faq</Typography>*/}
                            {/* </ButtonGroup>*/}
+                        </Paper>
                     </Grid>
                     <Grid item xs={8}>
-                        <Accordion>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
-                            >
-                                <Typography className={classes.heading}>Тема раздела 1</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Typography>
-                                    {messege}
-                                </Typography>
-                            </AccordionDetails>
-                        </Accordion>
+                        <AccordionList sections={sectionList}/>
                 </Grid>
                 </Grid>
             </Container>
