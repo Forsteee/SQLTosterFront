@@ -39,13 +39,15 @@ export default function FAQ() {
     const classes = useStyles();
 
     ////// тестовые константы
-    const section1 = ({id:1,name:'глава 1'});
-    const section2 = ({id:2,name:'глава 2'});
+    const section1 = ({id:1,name:'Глава 1'});
+    const section2 = ({id:2,name:'Глава 2'});
     const chapterList = [section1,section2];
-    const sectionItem1 = ({title:'1',content:'2'});
-    const sectionItem2 = ({title:'2',content:'3'});
-    const sectionList1 = [sectionItem1,sectionItem1,sectionItem1];
-    const sectionList2 = [sectionItem2,sectionItem2];
+    const sectionItem1 = ({id:1,title:'1',content:'2'});
+    const sectionItem2 = ({id:2,title:'2',content:'3'});
+    const sectionItem3 = ({id:3,title:'3',content:'3sdfsdf'});
+    const sectionItem4 = ({id:4,title:'3',content:'4sdsf'});
+    const sectionList1 = [sectionItem1,sectionItem2];
+    const sectionList2 = [sectionItem3,sectionItem4];
     /*
     * const - массив с строками таблицы 'главы' ()
     * const - массив с строками таблицы 'содержание глав'
@@ -64,6 +66,7 @@ export default function FAQ() {
         }else{
             setSectionList(sectionList2);
         }
+
         console.log(id);
     }
 

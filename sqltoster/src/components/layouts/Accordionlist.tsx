@@ -15,15 +15,28 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 export interface ISections {
+    id: number;
     title: string;
     content: string;
+
 }
 export default function AccordionList(props:{sections: ISections[]}) {
 
     const classes = useStyles();
 
+    const [openId, setOpenId] = React.useState<number>(0);
+
+    function handleAccordClick(id:number) {
+        if (openId === id) setOpenId(0);
+        if (openId !== id) setOpenId(id);
+    }
+
     const accordionlist = props.sections.map((section) =>
-        <Accordion>
+        <Accordion
+        key={section.id}
+        expanded={section.id === openId}
+        onClick={() => handleAccordClick(section.id)}
+        >
             <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"

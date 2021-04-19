@@ -13,15 +13,12 @@ const useStyles = makeStyles((theme: Theme) =>
         ourBtn:{
             position: 'relative',
             display: 'block',
-            //margin: '30px auto',
             padding: '5px',
             overflow: 'hidden',
             borderWidth: '0',
             outline: 'none',
             borderRadius: '3px',
-            //boxShadow: '0 1px 4px rgba(0, 0, 0, .6)',
             backgroundColor: 'white',
-            //color: '#ecf0f1',
             fontSize: theme.typography.pxToRem(21),
             fontWeight: theme.typography.fontWeightRegular,
             transition: 'background-color .3s',
@@ -31,15 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
                 backgroundColor: '#6ADA6A',
                 color: 'white',
             },
-           /* '&:active': {
-                boxShadow: 'none',
-                backgroundColor: '#6ADA6A',
-                borderColor: '#6ADA6A',
-            },*/
-            /*'&:focus': {
-                color: '#0083FF',
-                //backgroundColor: '#27ae60',
-            },*/
         },
     }),
 );
@@ -58,14 +46,14 @@ export const ChangingButton:React.FC<ISetChapterProps> =(props)=>{
     const classes = useStyles();
 
     const  handleClick=(event: React.MouseEvent<HTMLElement>)=>{
-        props.onClickChapter(+(event.target as HTMLInputElement).value);// изменяем id главы в форме FAQ
+        props.onClickChapter(+(event.currentTarget as HTMLButtonElement).value);// изменяем id главы в форме FAQ
     }
 
-    const listButton = props.chapters.map((chapter) =><button
+    const listButton = props.chapters.map((chapter) =><Button
         className={classes.ourBtn}
         value={chapter.id}
         onClick = {handleClick}
-    >{chapter.name}</button>);
+    >{chapter.name}</Button>);
 
     return (
        <div>
