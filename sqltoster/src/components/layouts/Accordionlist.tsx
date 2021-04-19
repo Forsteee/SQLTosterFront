@@ -14,11 +14,11 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
-export interface Sections {
+export interface ISections {
     title: string;
     content: string;
 }
-export default function AccordionList(props:{sections: Sections[]}) {
+export default function AccordionList(props:{sections: ISections[]}) {
 
     const classes = useStyles();
 

@@ -1,9 +1,7 @@
-import React from 'react';
+import React ,{useState}from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -46,31 +44,28 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export const numberSectionActive = 'sdfsdfsdfsdfdf';
+interface IChapters {
+    id: number;
+    name: string;
+}
+interface ISetChapterProps {
+    onClickChapter(id:number):void
+    chapters: IChapters[]
+}
 
-export default function ChangingButton(props:{elements: string[]}) {
+export const ChangingButton:React.FC<ISetChapterProps> =(props)=>{
 
     const classes = useStyles();
-    const i = props.elements;
 
+    const  handleClick=(event: React.MouseEvent<HTMLElement>)=>{
+        props.onClickChapter(+(event.target as HTMLInputElement).value);// изменяем id главы в форме FAQ
+    }
 
-    const [value, setValue] = React.useState(i[0]);
-
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        //console.log('fgfgfg');
-        setValue((event.target as HTMLInputElement).value);
-        //numberSectionActive = (event.target as HTMLInputElement).value;
-    };
-
-
-
-
-    const listButton = i.map((element) =><button
+    const listButton = props.chapters.map((chapter) =><button
         className={classes.ourBtn}
-        value={element}
+        value={chapter.id}
         onClick = {handleClick}
-    >222</button>);
-
+    >{chapter.name}</button>);
 
     return (
        <div>
@@ -80,12 +75,7 @@ export default function ChangingButton(props:{elements: string[]}) {
                className={classes.btnG}
            >
                {listButton}
-               {/*<Typography component="div" variant="h5" >{value}</Typography>
-               {numberSectionActive}*/}
            </ButtonGroup>
-          {/* <RadioGroup name="section" value={value} onChange={handleChange}>
-               {listButton}
-           </RadioGroup>*/}
        </div>
     );
 }
