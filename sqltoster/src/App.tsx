@@ -7,6 +7,7 @@ import Home from './components/Home';
 import MyCourses from "./components/Mycourses";
 import FAQ from "./components/FAQ";
 import Library from "./components/Library";
+import Test from './components/Test'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path='/mycourses' component={MyCourses} />
           <Route path='/faq' component={FAQ} />
           <Route path='/library' component={Library} />
+          <Route path='/test' component={Test} />
       </Layout>
   );
 }
