@@ -6,48 +6,92 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import {ChangingButton} from "./layouts/Changingbutton";
 import AccordionList from "./layouts/Accordionlist";
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Box from '@material-ui/core/Box';
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Accordion from "@material-ui/core/Accordion";
+
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root:{
+            flexGrow: 1,
+            backgroundColor:  theme.palette.background.paper,
+            display: 'flex',
+            height: 224,
+        },
+        tabs: {
+            borderRight: `1px solid ${theme.palette.divider}`,
+            marginTop: '11%',
 
         },
-        main:{
+        faq:{
 
+        },
+        cont:{
+            backgroundColor: '#EDEEF0',
+            height: '100vh',
         },
         headT:{
             textAlign:'center',
             paddingTop:'1%',
 
         },
-        btnG:{
-            textAlign:'center',
-            color:'white',
-            width:'100%',
-        },
-        heading: {
-            fontSize: theme.typography.pxToRem(15),
-            fontWeight: theme.typography.fontWeightRegular,
-        },
-        faq:{
-            padding: theme.spacing(1,0,1,0),
-        },
     }),
 );
 
-export default function FAQ() {
+
+
+/////vkladki
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: any;
+    value: any;
+}
+
+function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`vertical-tabpanel-${index}`}
+            aria-labelledby={`vertical-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box p={3}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+
+function a11yProps(index: any) {
+    return {
+        id: `vertical-tab-${index}`,
+        'aria-controls': `vertical-tabpanel-${index}`,
+    };
+}
+///
+
+export default function Library() {
     const classes = useStyles();
 
     ////// тестовые константы
     const section1 = ({id:1,name:'Глава 1'});
     const section2 = ({id:2,name:'Глава 2'});
     const chapterList = [section1,section2];
-    const sectionItem1 = ({id:1,title:'1',content:'2'});
-    const sectionItem2 = ({id:2,title:'2',content:'3'});
-    const sectionItem3 = ({id:3,title:'3',content:'3sdfsdf'});
-    const sectionItem4 = ({id:4,title:'3',content:'4sdsf'});
-    const sectionList1 = [sectionItem1,sectionItem2];
-    const sectionList2 = [sectionItem3,sectionItem4];
+    const sectionItem1 = ({id:1,title:'1',content:'2',section_id:1});
+    const sectionItem2 = ({id:2,title:'2',content:'3',section_id:1});
+    const sectionItem3 = ({id:3,title:'3',content:'3sdfsdf',section_id:2});
+    const sectionItem4 = ({id:4,title:'3',content:'4sdsf',section_id:2});
+    const sectionList1 = [sectionItem1,sectionItem2,sectionItem3,sectionItem4];
     /*
     * const - массив с строками таблицы 'главы' ()
     * const - массив с строками таблицы 'содержание глав'
@@ -55,38 +99,62 @@ export default function FAQ() {
     *
     *
     * */
-    const [activeChapter,setActiveChapter]=React.useState(1);
-    const changeChapter=(id:number)=>{
-        setActiveChapter(id);
-        //запрос к бд по вытягиванию строки таблицы 'содержание глав' по id главы -> массив с содержанием главы (sectionList - сейчас), будем юзать setSectionList
-        //setSectionList(/*ответ от БД (response)*/)
-        //пока так (для теста)
-        if (id==1){
-            setSectionList(sectionList1);
-        }else{
-            setSectionList(sectionList2);
-        }
 
-        console.log(id);
-    }
+    const [value, setValue] = React.useState(0);
 
-    const [sectionList,setSectionList]=React.useState(sectionList1);
+    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setValue(newValue);
+    };
+    /////
 
     return (
+
         <div className={classes.root}>
-            <Container maxWidth="md" className={classes.main}>
+            <Container maxWidth="md" className={classes.cont}>
                 <Typography component="div" variant="h5" className={classes.headT}>
-                    Ответы на часто задаваемые вопросы
+                    Ответы на часто задаваемы вопросы
                 </Typography>
                 <Grid container spacing={3} className={classes.faq}>
-                    <Grid item xs={4}>
-                        <Paper elevation={3}>
-                                <ChangingButton onClickChapter={changeChapter} chapters={chapterList} /> {/*onClickChapter={changeChapter}*/}
-                        </Paper>
+                    <Grid item xs={3}>
+                        <Tabs
+                            orientation="vertical"
+                            variant="scrollable"
+                            value={value}
+                            onChange={handleChange}
+                            aria-label="Vertical tabs example"
+                            className={classes.tabs}
+                        >
+                            {chapterList.map((chapter) =>
+                                <Tab label={chapter.name} {...a11yProps(chapter.id)} />
+                            )}
+                        </Tabs>
                     </Grid>
-                    <Grid item xs={8}>
-                        <AccordionList sections={sectionList}/>
-                </Grid>
+                    <Grid item xs={9}>
+                        {chapterList.map((chapter)=>
+                            <TabPanel value={value} index={chapter.id-1}>
+                                {sectionList1.map((section)=>{
+                                        if(section.section_id==chapter.id){
+                                            return(
+                                                <Accordion>
+                                                    <AccordionSummary
+                                                        expandIcon={<ExpandMoreIcon />}
+                                                        aria-controls="panel1a-content"
+                                                        id="panel1a-header"
+                                                    >
+                                                        <Typography >{section.title}</Typography>
+                                                    </AccordionSummary>
+                                                    <AccordionDetails>
+                                                        <Typography>
+                                                            {section.content}
+                                                        </Typography>
+                                                    </AccordionDetails>
+                                                </Accordion>)
+                                        }
+                                    }
+                                )}
+                            </TabPanel>
+                        )}
+                    </Grid>
                 </Grid>
             </Container>
         </div>

@@ -20,12 +20,16 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         faq:{
             padding: theme.spacing(1,0,1,0),
+
         },
         rightB:{
             textAlign: 'right',
         },
         heightT:{
             height:'228px',
+        },
+        borderC:{
+
         },
     }),
 );
@@ -69,16 +73,17 @@ export default function Test() {
     const classes = useStyles();
     const theme = useTheme();
 
-    const [value, setValue] = React.useState(0);
+    const [upperPanel, setUpperPanel] = React.useState(0);
 
-    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-        setValue(newValue);
+    const handleChangeUpperPanel = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setUpperPanel(newValue);
     };
 
-    const handleChangeIndex = (index: number) => {
-        setValue(index);
-    };
+    const [lowPanel, setLowPanel] = React.useState(0);
 
+    const handleChangeLowPanel = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setLowPanel(newValue);
+    };
 
     const [answer, setAnswer] = React.useState('');
 
@@ -88,16 +93,13 @@ export default function Test() {
 
     const [standart, setStandart] = React.useState('Эталон из БД');
 
-    const handleChangeStandart = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setStandart(event.target.value);
-    };
-
     return (
-        <div >
+        <div>
             <Container maxWidth="md" className={classes.main}>
                 <Grid container
                       direction="column"
                       justify="center"
+                      className={classes.borderC}
                 >
                     <Grid item>
                 <Grid container spacing={3} className={classes.faq}>
@@ -109,8 +111,8 @@ export default function Test() {
                     <Grid item xs={8}>
                         <AppBar position="static" color="default">
                             <Tabs
-                                value={value}
-                                onChange={handleChange}
+                                value={upperPanel}
+                                onChange={handleChangeUpperPanel}
                                 indicatorColor="primary"
                                 textColor="primary"
                                 variant="fullWidth"
@@ -121,7 +123,7 @@ export default function Test() {
                             </Tabs>
                         </AppBar>
                         <div className={classes.heightT}>
-                            <TabPanel value={value} index={0} dir={theme.direction}>
+                            <TabPanel value={upperPanel} index={0} dir={theme.direction}>
                                 <TextField
                                     id=""
                                     multiline
@@ -140,7 +142,7 @@ export default function Test() {
                                 </Button>
                                 </div>
                             </TabPanel>
-                            <TabPanel value={value} index={1} dir={theme.direction}>
+                            <TabPanel value={upperPanel} index={1} dir={theme.direction}>
                                 <TextField
                                     id=""
                                     multiline
@@ -158,6 +160,41 @@ export default function Test() {
                     </Grid>
                     <Grid item>
                        <>{/*сделать независимые вкладки */}</>
+                        <AppBar position="static" color="default">
+                            <Tabs
+                                value={lowPanel}
+                                onChange={handleChangeLowPanel}
+                                indicatorColor="primary"
+                                textColor="primary"
+                                variant="fullWidth"
+                                aria-label="full width tabs example"
+                            >
+                                <Tab label="Схема базы данных" {...a11yProps(0)} />
+                                <Tab label="Результат запроса" {...a11yProps(1)} />
+                            </Tabs>
+                        </AppBar>
+                        <div className={classes.heightT}>
+                            <TabPanel value={lowPanel} index={0} dir={theme.direction}>
+                                <TextField
+                                    id=""
+                                    multiline
+                                    rows={20}
+                                    placeholder="Схема БД"
+                                    variant="outlined"
+                                    fullWidth
+                                />
+                            </TabPanel>
+                            <TabPanel value={lowPanel} index={1} dir={theme.direction}>
+                                <TextField
+                                    id=""
+                                    multiline
+                                    rows={20}
+                                    placeholder="Резульат запроса: табличка"
+                                    variant="outlined"
+                                    fullWidth
+                                />
+                            </TabPanel>
+                        </div>
                     </Grid>
                 </Grid>
             </Container>

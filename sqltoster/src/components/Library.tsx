@@ -26,10 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
         tabs: {
             borderRight: `1px solid ${theme.palette.divider}`,
             marginTop: '11%',
-            '&:hover': {
-                backgroundColor: '#6ADA6A',
-                color: 'white',
-            },
+
         },
         faq:{
 
@@ -38,10 +35,13 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: '#EDEEF0',
             height: '100vh',
         },
+        headT:{
+            textAlign:'center',
+            paddingTop:'1%',
+
+        },
     }),
 );
-
-
 
 /////vkladki
 interface TabPanelProps {
@@ -76,7 +76,6 @@ function a11yProps(index: any) {
         'aria-controls': `vertical-tabpanel-${index}`,
     };
 }
-///
 
 export default function Library() {
     const classes = useStyles();
@@ -98,40 +97,6 @@ export default function Library() {
     *
     * */
 
-    /////vkladki
-    interface TabPanelProps {
-        children?: React.ReactNode;
-        index: any;
-        value: any;
-    }
-
-    function TabPanel(props: TabPanelProps) {
-        const { children, value, index, ...other } = props;
-
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`vertical-tabpanel-${index}`}
-                aria-labelledby={`vertical-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box p={3}>
-                        <Typography>{children}</Typography>
-                    </Box>
-                )}
-            </div>
-        );
-    }
-
-    function a11yProps(index: any) {
-        return {
-            id: `vertical-tab-${index}`,
-            'aria-controls': `vertical-tabpanel-${index}`,
-        };
-    }
-
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -143,21 +108,10 @@ export default function Library() {
 
         <div className={classes.root}>
             <Container maxWidth="md" className={classes.cont}>
+                <Typography component="div" variant="h5" className={classes.headT}>
+                    Материалы
+                </Typography>
                 <Grid container spacing={3} className={classes.faq}>
-                    <Grid item xs={3}>
-            <Tabs
-                orientation="vertical"
-                variant="scrollable"
-                value={value}
-                onChange={handleChange}
-                aria-label="Vertical tabs example"
-                className={classes.tabs}
-            >
-                {chapterList.map((chapter) =>
-                    <Tab label={chapter.name} {...a11yProps(chapter.id)} />
-                )}
-            </Tabs>
-                    </Grid>
                     <Grid item xs={9}>
             {chapterList.map((chapter)=>
                 <TabPanel value={value} index={chapter.id-1}>
@@ -183,6 +137,20 @@ export default function Library() {
                     )}
                 </TabPanel>
             )}
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Tabs
+                            orientation="vertical"
+                            variant="scrollable"
+                            value={value}
+                            onChange={handleChange}
+                            aria-label="Vertical tabs example"
+                            className={classes.tabs}
+                        >
+                            {chapterList.map((chapter) =>
+                                <Tab label={chapter.name} {...a11yProps(chapter.id)} />
+                            )}
+                        </Tabs>
                     </Grid>
                 </Grid>
             </Container>
