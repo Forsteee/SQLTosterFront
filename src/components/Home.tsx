@@ -23,8 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
             textAlign: 'center',
             color: theme.palette.text.secondary,
             marginTop:'3%',
-
-
         },
         heading:{
             paddingTop:'20px',
