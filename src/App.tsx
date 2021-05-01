@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component, useEffect} from 'react';
 import { Route } from 'react-router';
 import './App.css';
 import { Layout } from './components/layouts/Layout';
@@ -8,6 +8,7 @@ import MyCourses from "./components/Mycourses";
 import FAQ from "./components/FAQ";
 import Library from "./components/Library";
 import Test from './components/Test'
+import axios from 'axios';
 
 function App() {
   return (

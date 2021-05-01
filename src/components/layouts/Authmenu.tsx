@@ -14,6 +14,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import Switch from '@material-ui/core/Switch';
+import axios from "axios";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -107,6 +108,16 @@ export default function CustomizedMenus() {
     };
     const auth= false;
 
+    const handleClickAuth = async ()=>{
+        await axios.post('http://localhost:3001/auth/login', {
+            username: '3',
+            password: '3'
+        }).then(function (response){
+            console.log(response)
+        }).catch(function (error){
+            console.log(error)
+        })
+    }
     return (
         <div>
 
@@ -161,7 +172,7 @@ export default function CustomizedMenus() {
                         variant="text"
                         className={classes.btnG}
                     >
-                        <Button>Войти</Button>
+                        <Button onClick={handleClickAuth}>Войти</Button>
                         <Button href='/registration'>Регистрация</Button>
                     </ButtonGroup>
                 </StyledMenuItem>
