@@ -58,8 +58,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
     const classes = useStyles();
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        alert('clicked');
+    const handleClickReg = async() => {
+        //await axios.post()
         //numberSectionActive = (event.target as HTMLInputElement).value;
     };
     return (
@@ -124,7 +124,7 @@ export default function SignUp() {
                         variant="outlined"
                         color="default"
                         className={classes.submit}
-                        onClick={handleClick}
+                        onClick={handleClickReg}
                     >
                        Зарегистрироваться
                     </Button>

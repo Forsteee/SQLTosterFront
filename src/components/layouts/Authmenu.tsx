@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {createStyles, makeStyles, Theme, withStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
@@ -15,6 +15,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import Switch from '@material-ui/core/Switch';
 import axios from "axios";
+import {useDispatch, useSelector} from "react-redux";
+import {login, logout, selectUser} from "../../features/userSlice";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -95,6 +97,8 @@ export default function CustomizedMenus() {
         showPassword: false,
     });
 
+    const [loginN,setLoginN] = useState('');
+
     const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
         setValues({ ...values, [prop]: event.target.value });
     };
@@ -106,22 +110,42 @@ export default function CustomizedMenus() {
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-    const auth= false;
 
-    const handleClickAuth = async ()=>{
+
+    ///// autorization
+    const dispatch = useDispatch();
+    const userAuthent = useSelector(selectUser);
+    /////
+
+    const [responses,setResponses] = useState({access_token:'',user:{}});
+
+    const handleClickAuth = async (e:any)=>{
         await axios.post('http://localhost:3001/auth/login', {
-            username: '3',
-            password: '3'
+            username: loginN,
+            password: values.password,
         }).then(function (response){
             console.log(response)
+            setResponses(response.data);
+            localStorage.setItem('user_data', JSON.stringify(responses.user));
+            dispatch(login({
+                user_data: responses.user,
+                loginIn:true,
+            }));
+            setAnchorEl(null);
         }).catch(function (error){
             console.log(error)
         })
     }
+
+    const handleClickLogOut = (e:any)=>{
+        dispatch(logout());
+        localStorage.removeItem('user_data');
+        setAnchorEl(null);
+    }
     return (
         <div>
 
-        {!auth && (
+        {!userAuthent && (
         <div>
             <IconButton
                 aria-label="account of current user"
@@ -140,7 +164,7 @@ export default function CustomizedMenus() {
                 onClose={handleClose}
             >
                 <StyledMenuItem>
-                    <TextField id="" placeholder='Логин' className={classes.inputBColor} />
+                    <TextField id="" value={loginN} onChange={e=>setLoginN(e.target.value)} placeholder='Логин' className={classes.inputBColor} />
                 </StyledMenuItem>
                 <StyledMenuItem>
                     <Input
@@ -172,7 +196,7 @@ export default function CustomizedMenus() {
                         variant="text"
                         className={classes.btnG}
                     >
-                        <Button onClick={handleClickAuth}>Войти</Button>
+                        <Button onClick={(e)=>handleClickAuth(e)}>Войти</Button>
                         <Button href='/registration'>Регистрация</Button>
                     </ButtonGroup>
                 </StyledMenuItem>
@@ -180,7 +204,7 @@ export default function CustomizedMenus() {
         </div>
         )}
 
-    {auth && (
+    {userAuthent && (
         <div>
             <IconButton
                 aria-label="account of current user"
@@ -210,7 +234,7 @@ export default function CustomizedMenus() {
                         <Button>Настройки</Button>
                         <Button>Мои задания</Button>
                         <Button>Уведомления</Button>
-                        <Button>Выход</Button>
+                        <Button onClick={handleClickLogOut}>Выход</Button>
                     </ButtonGroup>
                 </StyledMenuItem>
             </StyledMenu>
