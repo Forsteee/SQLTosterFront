@@ -117,10 +117,10 @@ export default function CustomizedMenus() {
     const userAuthent = useSelector(selectUser);
     /////
 
-    const [responses,setResponses] = useState({access_token:'',user:{}});
-
+    /*const [responses,setResponses] = useState({access_token:'',user:{}});
+*/
     const handleClickAuth = async (e:any)=>{
-        await axios.post('http://localhost:3001/auth/login', {
+       /* await axios.post('http://localhost:3001/auth/login', {
             username: loginN,
             password: values.password,
         }).then(function (response){
@@ -134,7 +134,7 @@ export default function CustomizedMenus() {
             setAnchorEl(null);
         }).catch(function (error){
             console.log(error)
-        })
+        })*/
     }
 
     const handleClickLogOut = (e:any)=>{
