@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -7,6 +7,11 @@ import Button from '@material-ui/core/Button';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import Grid from '@material-ui/core/Grid';
 import Paper from "@material-ui/core/Paper";
+import {useSelector} from "react-redux";
+import {selectUser} from "../features/userSlice";
+import {ITests} from "./interfaces/ITests";
+import axios from "axios";
+import GetTest from "./api/GetTest";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -70,21 +75,78 @@ export default function Reg() {
 
     const classes = useStyles();
 
-    return (
+    const userAuthent = useSelector(selectUser);
 
+    const [loading, setLoading] = useState(false);
+
+    const [allTests, setAllTests] = useState<ITests[]|undefined>(undefined);
+
+    if(userAuthent){
+        axios.get('http://localhost:3001/tests')
+            .then(function (response){
+                setAllTests(response.data);
+                setLoading(true);
+            })
+            .catch(function (error){
+                console.log(error)
+            })}
+    else{
+        //переделать под запрос на получение тестов для неавторизованных пользователей
+        axios.get('http://localhost:3001/tests')
+            .then(function (response){
+                setAllTests(response.data);
+                setLoading(true);
+            })
+            .catch(function (error){
+                console.log(error)
+            })
+    }
+
+    return (
         <div>
             <Container maxWidth="md">
-                <Paper className={classes.paper} >
+                <Paper className={classes.paper}>
                     <img src={imgsrc} className={classes.icontttt}/>
                 </Paper>
             </Container>
-    <Container  maxWidth="sm"  className={classes.main}>
+            <Container maxWidth="sm" className={classes.main}>
 
-        <Typography component="div" variant="h5" className={classes.heading}>
-            Онлайн-курсы
-        </Typography>
-
-        <Paper className={classes.paper} >
+                <Typography component="div" variant="h5" className={classes.heading}>
+                    Онлайн-курсы
+                </Typography>
+                {loading && allTests!.map(test =>
+                    <Paper className={classes.paper}>
+                        <Grid container direction="row" justify="space-between" alignItems="center">
+                            <Grid item>
+                                <CardContent>
+                                    <Typography className={classes.title} color="textSecondary" gutterBottom>
+                                        Уровень {test.level}
+                                    </Typography>
+                                    <Typography variant="h5" component="h2">
+                                        {test.name}
+                                    </Typography>
+                                    <Typography variant="body2" component="p">
+                                        {test.description}
+                                    </Typography>
+                                </CardContent>
+                            </Grid>
+                            <Grid item>
+                                <img src={test.img} className={classes.icon}/>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    size='small'
+                                    variant="outlined"
+                                    color="default"
+                                    className={classes.submit}
+                                >
+                                    Начать
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                )}
+                {/* <Paper className={classes.paper} >
             <Grid container direction="row" justify="space-between" alignItems="center">
                 <Grid item>
                     <CardContent>
@@ -191,8 +253,8 @@ export default function Reg() {
                     </Button>
                 </Grid>
             </Grid>
-        </Paper>
-    </Container>
+        </Paper>*/}
+            </Container>
         </div>
     );
 }

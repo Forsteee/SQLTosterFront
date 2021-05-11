@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
@@ -13,6 +13,8 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Accordion from "@material-ui/core/Accordion";
+import {IMaterials} from "./interfaces/IMaterials";
+import axios from "axios";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -39,6 +41,12 @@ const useStyles = makeStyles((theme: Theme) =>
             textAlign:'center',
             paddingTop:'1%',
 
+        },
+        paper: {
+            padding: theme.spacing(0,2,0,2),
+            textAlign: 'center',
+            color: theme.palette.text.primary,
+            marginTop:'3%',
         },
     }),
 );
@@ -85,10 +93,10 @@ export default function Library() {
     const section2 = ({id:2,name:'Глава 2'});
     const chapterList = [section1,section2];
     const sectionItem1 = ({id:1,title:'1',content:'2',section_id:1});
-    const sectionItem2 = ({id:2,title:'2',content:'3',section_id:1});
-    const sectionItem3 = ({id:3,title:'3',content:'3sdfsdf',section_id:2});
-    const sectionItem4 = ({id:4,title:'3',content:'4sdsf',section_id:2});
-    const sectionList1 = [sectionItem1,sectionItem2,sectionItem3,sectionItem4];
+    const sectionItem2 = ({id:2,title:'2',content:'3',section_id:2});
+   /* const sectionItem3 = ({id:3,title:'3',content:'3sdfsdf',section_id:2});
+    const sectionItem4 = ({id:4,title:'3',content:'4sdsf',section_id:2});*/
+    const sectionList1 = [sectionItem1,sectionItem2];
     /*
     * const - массив с строками таблицы 'главы' ()
     * const - массив с строками таблицы 'содержание глав'
@@ -103,6 +111,17 @@ export default function Library() {
         setValue(newValue);
     };
     /////
+    const [loading, setLoading] = useState(false);
+
+    const [allMaterials, setAllMaterials] = useState<IMaterials[]|undefined>(undefined);
+    axios.get('http://localhost:3001/materials')
+        .then(function (response){
+            setAllMaterials(response.data);
+            setLoading(true);
+        })
+        .catch(function (error){
+            console.log(error)
+        })
 
     return (
 
@@ -113,30 +132,22 @@ export default function Library() {
                 </Typography>
                 <Grid container spacing={3} className={classes.faq}>
                     <Grid item xs={9}>
-            {chapterList.map((chapter)=>
-                <TabPanel value={value} index={chapter.id-1}>
-                    {sectionList1.map((section)=>{
-                        if(section.section_id==chapter.id){
-                            return(
-                            <Accordion>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                >
-                                    <Typography >{section.title}</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <Typography>
-                                        {section.content}
-                                    </Typography>
-                                </AccordionDetails>
-                            </Accordion>)
-                    }
-                        }
-                    )}
-                </TabPanel>
-            )}
+                        {loading && allMaterials!.map(material =>
+                            {chapterList.map((chapter)=>
+                                <TabPanel value={value} index={chapter.id-1}>
+                                    {sectionList1.map((section)=>{
+                                         if(section.section_id==chapter.id){
+                                            return(
+                                                <Paper className={classes.paper} elevation={3}>
+                                                    {material.id}
+                                                </Paper>
+                                          )
+                                        }
+                                    }
+                                    )}
+                                </TabPanel>
+                            )}
+                        )}
                     </Grid>
                     <Grid item xs={3}>
                         <Tabs

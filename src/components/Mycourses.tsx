@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import HeaderForProfile from "./layouts/Headerforprofile";
 import Paper from "@material-ui/core/Paper";
@@ -12,6 +12,9 @@ import Container from "@material-ui/core/Container";
 //import CircularProgressWithLabel from "./CircularProgressWithLabel";
 import CircularProgress, { CircularProgressProps } from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
+import {useSelector} from "react-redux";
+import {selectUser} from "../features/userSlice";
+import axios from "axios";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -92,9 +95,15 @@ function CircularProgressWithLabel(props: CircularProgressProps & { value: numbe
 export default function MyCourses() {
     const classes = useStyles();
 
+    const userAuthent = useSelector(selectUser);// или отсюда данные юзера или аксиосом
+
+    const [loading, setLoading] = useState(false);
+
+    //axios.get('http://localhost:3001/')
+
     return (
         <div className={classes.root}>
-            <HeaderForProfile/>
+            <HeaderForProfile name={'sdfsd'} img={'sdfsdf'} levelBrains={234}/>
             <Container maxWidth="sm" className={classes.main}>
                 <Typography component="div" variant="h5" className={classes.headT}>
                     Мои курсы
