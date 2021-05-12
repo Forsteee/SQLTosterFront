@@ -117,35 +117,128 @@ export default function CustomizedMenus() {
     const userAuthent = useSelector(selectUser);
     /////
 
-    /*const [responses,setResponses] = useState({access_token:'',user:{}});
-*/
     const handleClickAuth = async (e:any)=>{
-       /* await axios.post('http://localhost:3001/auth/login', {
+        await axios.post('http://localhost:3001/auth/login', {
             username: loginN,
             password: values.password,
         }).then(function (response){
             console.log(response)
-            setResponses(response.data);
-            localStorage.setItem('user_data', JSON.stringify(responses.user));
+            localStorage.setItem('user_token', JSON.stringify(response.data.access_token));
+            localStorage.setItem('user_id', JSON.stringify(response.data.user_id));
             dispatch(login({
-                user_data: responses.user,
+                user_id: response.data.user_id,
                 loginIn:true,
             }));
             setAnchorEl(null);
         }).catch(function (error){
             console.log(error)
-        })*/
+        })
     }
 
     const handleClickLogOut = (e:any)=>{
         dispatch(logout());
-        localStorage.removeItem('user_data');
+        localStorage.removeItem('user_token');
+        localStorage.removeItem('user_id');
         setAnchorEl(null);
     }
     return (
         <div>
-
-        {!userAuthent && (
+            {userAuthent ? <>
+                    <div>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleClick}
+                            color="inherit"
+                        >
+                            <AccountCircle/>
+                        </IconButton>
+                        <StyledMenu
+                            id="customized-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            <StyledMenuItem>
+                                <ButtonGroup
+                                    orientation="vertical"
+                                    size='small'
+                                    color="inherit"
+                                    variant="text"
+                                    className={classes.btnG}
+                                >
+                                    <Button>Профиль</Button>
+                                    <Button>Настройки</Button>
+                                    <Button>Мои задания</Button>
+                                    <Button>Уведомления</Button>
+                                    <Button onClick={handleClickLogOut}>Выход</Button>
+                                </ButtonGroup>
+                            </StyledMenuItem>
+                        </StyledMenu>
+                    </div>
+                </>
+                :
+                <>
+                    <div>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleClick}
+                            color="inherit"
+                        >
+                            <AccountCircle/>
+                        </IconButton>
+                        <StyledMenu
+                            id="customized-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            <StyledMenuItem>
+                                <TextField id="" value={loginN} onChange={e=>setLoginN(e.target.value)} placeholder='Логин' className={classes.inputBColor} />
+                            </StyledMenuItem>
+                            <StyledMenuItem>
+                                <Input
+                                    id="outlined-adornment-password"
+                                    className={classes.inputBColor}
+                                    placeholder='Пароль'
+                                    type={values.showPassword ? 'text' : 'password'}
+                                    value={values.password}
+                                    onChange={handleChange('password')}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                />
+                            </StyledMenuItem>
+                            <StyledMenuItem>
+                                <ButtonGroup
+                                    orientation="vertical"
+                                    size='small'
+                                    color="inherit"
+                                    variant="text"
+                                    className={classes.btnG}
+                                >
+                                    <Button onClick={(e)=>handleClickAuth(e)}>Войти</Button>
+                                    <Button href='/registration'>Регистрация</Button>
+                                </ButtonGroup>
+                            </StyledMenuItem>
+                        </StyledMenu>
+                    </div>
+                </>}
+        {/*{!userAuthent && (
         <div>
             <IconButton
                 aria-label="account of current user"
@@ -239,7 +332,7 @@ export default function CustomizedMenus() {
                 </StyledMenuItem>
             </StyledMenu>
         </div>
-    )}
+    )}*/}
         </div>
     );
 }

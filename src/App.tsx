@@ -9,21 +9,20 @@ import FAQ from "./components/FAQ";
 import Library from "./components/Library";
 import Test from './components/Test'
 import axios from 'axios';
-import {useDispatch} from "react-redux";
-import {login} from "./features/userSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {login, selectUser} from "./features/userSlice";
 import Editing from "./components/Editing";
 
 function App() {
     const dispatch = useDispatch();
 
-    const user = localStorage.getItem('user_data');
-    if (user != null) {
+    const userId = localStorage.getItem('user_id');
+    if (userId != null) {
         dispatch(login({
-            user_data: user,
+            user_id: userId,
             loginIn: true,
         }))
     }
-
     return (
         <Layout>
             <>
