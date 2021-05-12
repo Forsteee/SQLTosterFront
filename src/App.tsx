@@ -11,6 +11,7 @@ import Test from './components/Test'
 import axios from 'axios';
 import {useDispatch} from "react-redux";
 import {login} from "./features/userSlice";
+import Editing from "./components/Editing";
 
 function App() {
     const dispatch = useDispatch();
@@ -32,6 +33,7 @@ function App() {
                 <Route path='/faq' component={FAQ}/>
                 <Route path='/library' component={Library}/>
                 <Route path='/test' component={Test}/>
+                <Route path='/editing' component={Editing}/>
             </>
         </Layout>
     );

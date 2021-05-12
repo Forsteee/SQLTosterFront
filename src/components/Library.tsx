@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
@@ -113,7 +113,14 @@ export default function Library() {
     /////
     const [loading, setLoading] = useState(false);
 
+
     const [allMaterials, setAllMaterials] = useState<IMaterials[]|undefined>(undefined);
+
+    useEffect(()=>{
+        loadMaterials();
+    }, [])
+
+    const loadMaterials = async () => {
     axios.get('http://localhost:3001/materials')
         .then(function (response){
             setAllMaterials(response.data);
@@ -122,6 +129,7 @@ export default function Library() {
         .catch(function (error){
             console.log(error)
         })
+    }
 
     return (
 
@@ -131,24 +139,28 @@ export default function Library() {
                     Материалы
                 </Typography>
                 <Grid container spacing={3} className={classes.faq}>
+
                     <Grid item xs={9}>
                         {loading && allMaterials!.map(material =>
-                            {chapterList.map((chapter)=>
+                           {chapterList.map((chapter)=>
                                 <TabPanel value={value} index={chapter.id-1}>
                                     {sectionList1.map((section)=>{
                                          if(section.section_id==chapter.id){
-                                            return(
+                                           return(
+                                               <Accordion>
                                                 <Paper className={classes.paper} elevation={3}>
-                                                    {material.id}
+                                                   da {material.id}
                                                 </Paper>
+                                               </Accordion>
                                           )
                                         }
-                                    }
+                                        }
                                     )}
                                 </TabPanel>
                             )}
                         )}
                     </Grid>
+
                     <Grid item xs={3}>
                         <Tabs
                             orientation="vertical"
