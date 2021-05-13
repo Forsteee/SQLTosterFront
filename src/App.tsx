@@ -8,20 +8,41 @@ import MyCourses from "./components/Mycourses";
 import FAQ from "./components/FAQ";
 import Library from "./components/Library";
 import Test from './components/Test'
-import axios from 'axios';
 import {useDispatch, useSelector} from "react-redux";
-import {login, selectUser} from "./features/userSlice";
+import {login, logout, selectUser} from "./features/userSlice";
 import Editing from "./components/Editing";
+import axios from "axios";
 
 function App() {
     const dispatch = useDispatch();
 
     const userId = localStorage.getItem('user_id');
-    if (userId != null) {
-        dispatch(login({
+    const user_token = localStorage.getItem('user_token')
+
+    if (user_token != null) {
+
+        const config = {
+            headers: { Authorization: `Bearer ${user_token}` },
+        };
+        const bodyParameters = {
             user_id: userId,
-            loginIn: true,
-        }))
+        };
+        const req = async () => await axios.post('http://localhost:3001/users/checkToken',
+            bodyParameters,
+            config
+            )
+            .then(function (response){
+            dispatch(login({
+                user_id: userId,
+                loginIn: true,
+            }))
+            }).catch(function (error){
+            dispatch(logout());
+            localStorage.removeItem('user_token');
+            localStorage.removeItem('user_id');
+            console.log(error);
+            })
+        req();
     }
     return (
         <Layout>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,6 +13,8 @@ import Help from '@material-ui/icons/Help';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import  MenuAuth from './Authmenu'
+import {useSelector} from "react-redux";
+import {selectUser} from "../../features/userSlice";
 //import styles = module
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -63,30 +65,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function MenuAppBar() {
     const classes = useStyles();
-    const [auth, setAuth] = React.useState(true);
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAuth(event.target.checked);
-    };
+    const userAuthent = useSelector(selectUser);
 
-    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
+    const [checkUser,setCheckUser] = useState('');
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    useEffect(()=>{
+        if(userAuthent) setCheckUser('/mycourses')
+        else setCheckUser('')
+    },[userAuthent])
 
     return (
             <AppBar position="static" className={classes.colored}>
-                {/*<FormGroup>
-                <FormControlLabel
-                    control={<Switch checked={auth} onChange={handleChange} aria-label="login switch" />}
-                    label={auth ? 'Logout' : 'Login'}
-                />
-            </FormGroup>*/}
                 <Toolbar className={classes.height50px}>
                     <Grid container direction="row" justify="space-evenly" alignItems="center">
                         <Grid item>
@@ -98,7 +88,7 @@ export default function MenuAppBar() {
                     </div>
                         </Grid>
                         <Grid item className={classes.linkcenterp}>
-                        <Link color="inherit" href="/mycourses" className={classes.linq}>
+                        <Link color="inherit" href={checkUser} className={classes.linq}>
                             <IconButton color="inherit">
                                 <WhatshotIcon className={classes.icon}/>
                                 <Typography variant="body1"><Hidden xsDown>Мои курсы</Hidden></Typography>

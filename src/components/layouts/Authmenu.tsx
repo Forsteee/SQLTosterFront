@@ -123,8 +123,8 @@ export default function CustomizedMenus() {
             password: values.password,
         }).then(function (response){
             console.log(response)
-            localStorage.setItem('user_token', JSON.stringify(response.data.access_token));
-            localStorage.setItem('user_id', JSON.stringify(response.data.user_id));
+            localStorage.setItem('user_token', response.data.access_token);
+            localStorage.setItem('user_id', response.data.user_id);
             dispatch(login({
                 user_id: response.data.user_id,
                 loginIn:true,
@@ -140,6 +140,7 @@ export default function CustomizedMenus() {
         localStorage.removeItem('user_token');
         localStorage.removeItem('user_id');
         setAnchorEl(null);
+        window.location.assign('http://localhost:3000/')
     }
     return (
         <div>
@@ -169,10 +170,8 @@ export default function CustomizedMenus() {
                                     variant="text"
                                     className={classes.btnG}
                                 >
-                                    <Button>Профиль</Button>
-                                    <Button>Настройки</Button>
-                                    <Button>Мои задания</Button>
-                                    <Button>Уведомления</Button>
+                                    <Button>Мои курсы</Button>
+                                    <Button>Редактировать профиль</Button>
                                     <Button onClick={handleClickLogOut}>Выход</Button>
                                 </ButtonGroup>
                             </StyledMenuItem>
@@ -238,101 +237,6 @@ export default function CustomizedMenus() {
                         </StyledMenu>
                     </div>
                 </>}
-        {/*{!userAuthent && (
-        <div>
-            <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleClick}
-                color="inherit"
-            >
-                <AccountCircle/>
-            </IconButton>
-            <StyledMenu
-                id="customized-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-            >
-                <StyledMenuItem>
-                    <TextField id="" value={loginN} onChange={e=>setLoginN(e.target.value)} placeholder='Логин' className={classes.inputBColor} />
-                </StyledMenuItem>
-                <StyledMenuItem>
-                    <Input
-                        id="outlined-adornment-password"
-                        className={classes.inputBColor}
-                        placeholder='Пароль'
-                        type={values.showPassword ? 'text' : 'password'}
-                        value={values.password}
-                        onChange={handleChange('password')}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={handleClickShowPassword}
-                                    onMouseDown={handleMouseDownPassword}
-                                    edge="end"
-                                >
-                                    {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                    />
-                </StyledMenuItem>
-                <StyledMenuItem>
-                    <ButtonGroup
-                        orientation="vertical"
-                        size='small'
-                        color="inherit"
-                        variant="text"
-                        className={classes.btnG}
-                    >
-                        <Button onClick={(e)=>handleClickAuth(e)}>Войти</Button>
-                        <Button href='/registration'>Регистрация</Button>
-                    </ButtonGroup>
-                </StyledMenuItem>
-            </StyledMenu>
-        </div>
-        )}
-
-    {userAuthent && (
-        <div>
-            <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleClick}
-                color="inherit"
-            >
-                <AccountCircle/>
-            </IconButton>
-            <StyledMenu
-                id="customized-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-            >
-                <StyledMenuItem>
-                    <ButtonGroup
-                        orientation="vertical"
-                        size='small'
-                        color="inherit"
-                        variant="text"
-                        className={classes.btnG}
-                    >
-                        <Button>Профиль</Button>
-                        <Button>Настройки</Button>
-                        <Button>Мои задания</Button>
-                        <Button>Уведомления</Button>
-                        <Button onClick={handleClickLogOut}>Выход</Button>
-                    </ButtonGroup>
-                </StyledMenuItem>
-            </StyledMenu>
-        </div>
-    )}*/}
         </div>
     );
 }
