@@ -103,7 +103,7 @@ export default function MyCourses() {
 
     return (
         <div className={classes.root}>
-            <HeaderForProfile name={'sdfsd'} img={'sdfsdf'} levelBrains={234}/>
+            <HeaderForProfile name={'sdfsd'} img={'sdfsdf'} levelBrains={234} />
             <Container maxWidth="sm" className={classes.main}>
                 <Typography component="div" variant="h5" className={classes.headT}>
                     Мои курсы

@@ -54,7 +54,8 @@ export default function HeaderForProfile(user:IUserForHeader) {
                 </Grid>
                 <Grid item>
                     Уровень знаний<br/>
-                    {user.levelBrains}
+                    {user.levelBrains}<br/><br/>
+                    <Link color="primary" href='/editing'>Редактировать профиль</Link>
                 </Grid>
                     </Grid>
                 </Paper>

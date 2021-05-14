@@ -96,12 +96,15 @@ export default function SignUp() {
 
     const handleClickReg = async() => {
 
-        console.log('response.data');
         await axios.post('http://localhost:3001/users/create',
             bodyParameters,)
             .then(function(response){
-                   console.log(response.data);
-                console.log('response.data');
+                if(response.data !== ''){
+                    loginR();
+                    goHome();
+                }else{
+                    console.log('Пользователь зареган, ебани алерт (введите другой логин)');
+                }
                }
             )
             .catch(console.log)
@@ -187,7 +190,7 @@ export default function SignUp() {
                             </Grid>
                         </Grid>
                         <Button
-                            type="submit"
+
                             fullWidth
                             variant="outlined"
                             color="default"

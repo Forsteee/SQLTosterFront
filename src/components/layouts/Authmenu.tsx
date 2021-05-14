@@ -170,8 +170,8 @@ export default function CustomizedMenus() {
                                     variant="text"
                                     className={classes.btnG}
                                 >
-                                    <Button>Мои курсы</Button>
-                                    <Button>Редактировать профиль</Button>
+                                    <Button href='/mycourses'>Мои курсы</Button>
+                                    <Button href='/editing'>Редактировать профиль</Button>
                                     <Button onClick={handleClickLogOut}>Выход</Button>
                                 </ButtonGroup>
                             </StyledMenuItem>

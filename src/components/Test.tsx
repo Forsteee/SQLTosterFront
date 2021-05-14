@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Theme, createStyles, makeStyles,useTheme  } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from "@material-ui/core/Grid";
@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import axiosAuth from "./api/AxiosConfig";
+import { DataGrid, GridColDef } from '@material-ui/data-grid';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -68,6 +70,11 @@ function a11yProps(index: any) {
     };
 }
 
+function isObject(val: any) {
+    if (val === null) { return false;}
+    return ( (typeof val === 'function') || (typeof val === 'object') );
+}
+
 export default function Test() {
 
     const classes = useStyles();
@@ -92,6 +99,36 @@ export default function Test() {
     };
 
     const [standart, setStandart] = React.useState('Эталон из БД');
+
+    const bodyParameters = {
+        request: answer,
+    };
+    const [res,setRes] = useState('');
+    const [columns,setColumns] = useState<GridColDef[]>([]);// колонки ебать для таблицы
+    const [rows, setRows] = useState<[]>([]);// строки ебать для таблицы
+
+    const handleClickReq = async () => {
+        await axiosAuth.post('/testingapi',
+            bodyParameters)
+            .then(function (response){
+                if(isObject(response.data[0])){
+                    // заполнение колонок
+                    const columnsFromRes = Object.keys(response.data[0]);
+                    let columnsForColDef: GridColDef[] = [];
+                    columnsFromRes.forEach((item:string)=>{
+                        columnsForColDef.push({ field: item, headerName: item })
+                    })
+                    setColumns(columnsForColDef);
+                    //заполнение строк
+                    setRows(response.data);
+                }else{
+                    //сообщение об ошибке
+                    setRes(response.data);
+                }
+            }).catch(function (error){
+                console.log(error);
+            })
+    }
 
     return (
         <div>
@@ -137,7 +174,9 @@ export default function Test() {
                                 <div className={classes.rightB}>
                                 <Button variant="contained"
                                         size="small"
-                                        color="primary">
+                                        color="primary"
+                                        onClick={handleClickReq}
+                                >
                                     Отправить
                                 </Button>
                                 </div>
@@ -159,7 +198,6 @@ export default function Test() {
                 </Grid>
                     </Grid>
                     <Grid item>
-                       <>{/*сделать независимые вкладки */}</>
                         <AppBar position="static" color="default">
                             <Tabs
                                 value={lowPanel}
@@ -185,14 +223,7 @@ export default function Test() {
                                 />
                             </TabPanel>
                             <TabPanel value={lowPanel} index={1} dir={theme.direction}>
-                                <TextField
-                                    id=""
-                                    multiline
-                                    rows={20}
-                                    placeholder="Резульат запроса: табличка"
-                                    variant="outlined"
-                                    fullWidth
-                                />
+                                <DataGrid rows={rows} columns={columns} pageSize={7} autoHeight={true} />
                             </TabPanel>
                         </div>
                     </Grid>
