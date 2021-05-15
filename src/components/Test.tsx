@@ -12,17 +12,17 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import axiosAuth from "./api/AxiosConfig";
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root:{
         },
         main:{
-
         },
         faq:{
             padding: theme.spacing(1,0,1,0),
-
         },
         rightB:{
             textAlign: 'right',
@@ -31,7 +31,6 @@ const useStyles = makeStyles((theme: Theme) =>
             height:'228px',
         },
         borderC:{
-
         },
     }),
 );
@@ -70,6 +69,10 @@ function a11yProps(index: any) {
     };
 }
 
+function Alert(props: AlertProps) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 function isObject(val: any) {
     if (val === null) { return false;}
     return ( (typeof val === 'function') || (typeof val === 'object') );
@@ -90,6 +93,18 @@ export default function Test() {
 
     const handleChangeLowPanel = (event: React.ChangeEvent<{}>, newValue: number) => {
         setLowPanel(newValue);
+    };
+
+    const [openSnackS, setOpenSnackS] = React.useState(false);
+    const [openSnackEr, setOpenSnackEr] = React.useState(false);
+    const [openSnackErToReq, setOpenSnackErToReq] = React.useState(false);
+    const handleCloseSnack = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSnackS(false);
+        setOpenSnackEr(false);
+        setOpenSnackErToReq(false);
     };
 
     const [answer, setAnswer] = React.useState('');
@@ -121,12 +136,15 @@ export default function Test() {
                     setColumns(columnsForColDef);
                     //заполнение строк
                     setRows(response.data);
+                    setOpenSnackS(true);
                 }else{
                     //сообщение об ошибке
-                    setRes(response.data);
+                    setRes(response.data.message);
+                    setOpenSnackErToReq(true);
                 }
             }).catch(function (error){
                 console.log(error);
+                setOpenSnackEr(true);
             })
     }
 
@@ -138,6 +156,25 @@ export default function Test() {
                       justify="center"
                       className={classes.borderC}
                 >
+                    <Snackbar open={openSnackS} autoHideDuration={6000} onClose={handleCloseSnack}>
+                        <Alert onClose={handleCloseSnack} severity="success">
+                            Запрос выполнен, результат во вкладке 'Результат запроса'!
+                        </Alert>
+                    </Snackbar>
+                    <Snackbar open={openSnackEr} autoHideDuration={6000} onClose={handleCloseSnack}>
+                        <Alert onClose={handleCloseSnack} severity="error">
+                            Уууупс, произошла ошибка!
+                        </Alert>
+                    </Snackbar>
+                    <Snackbar
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        open={openSnackErToReq}
+                        onClose={handleCloseSnack}
+                    >
+                        <Alert onClose={handleCloseSnack} severity="error">
+                            {res}
+                        </Alert>
+                    </Snackbar>
                     <Grid item>
                 <Grid container spacing={3} className={classes.faq}>
                     <Grid item xs={4}>
