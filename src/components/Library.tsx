@@ -43,6 +43,13 @@ const useStyles = makeStyles((theme: Theme) =>
             color: theme.palette.text.primary,
             marginTop:'3%',
         },
+        title:{
+            fontSize:'20px',
+            padding:'20px',
+        },
+        description:{
+            textAlign: 'left',
+        },
     }),
 );
 
@@ -102,6 +109,7 @@ export default function Library() {
     axios.get('http://localhost:3001/materials')
         .then(function (response){
             setAllMaterials(response.data);
+
             console.log(response.data);
             setLoading(true);
         })
@@ -122,9 +130,10 @@ export default function Library() {
                 <Grid container spacing={3} className={classes.faq}>
                     <Grid item xs={9}>
                            {allMaterials.map((material)=>
-                                <TabPanel value={value} index={material.chapter - 1}>
+                                <TabPanel value={value} index={material.chapter-1}>
                                     <Paper className={classes.paper} elevation={3}>
-                                        {JSON.stringify(material.file)}
+                                        {JSON.parse(JSON.stringify(material.file)).title}
+                                        {JSON.parse(JSON.stringify(material.file)).description}
                                     </Paper>
                                 </TabPanel>
                            )}

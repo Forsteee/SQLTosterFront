@@ -12,6 +12,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {login, logout, selectUser} from "./features/userSlice";
 import Editing from "./components/Editing";
 import axios from "axios";
+import Course from "./components/Course";
 
 function App() {
     const dispatch = useDispatch();
@@ -52,8 +53,9 @@ function App() {
                 <Route path='/mycourses' component={MyCourses}/>
                 <Route path='/faq' component={FAQ}/>
                 <Route path='/library' component={Library}/>
-                <Route path='/test' component={Test}/>
+                <Route path='/test/:testId' component={Test}/>
                 <Route path='/editing' component={Editing}/>
+                <Route path='/course' component={Course}/>
             </>
         </Layout>
     );

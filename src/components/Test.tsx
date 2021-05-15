@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Theme, createStyles, makeStyles,useTheme  } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from "@material-ui/core/Grid";
@@ -14,6 +14,10 @@ import axiosAuth from "./api/AxiosConfig";
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import {withRouter, RouteComponentProps, useParams} from "react-router";
+import axios from "axios";
+import {useSelector} from "react-redux";
+import {selectUser} from "../features/userSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -34,6 +38,10 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
+
+interface TestProps extends RouteComponentProps {
+    testId: number;
+}
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -78,10 +86,33 @@ function isObject(val: any) {
     return ( (typeof val === 'function') || (typeof val === 'object') );
 }
 
-export default function Test() {
+function Test(props: TestProps) {
 
     const classes = useStyles();
     const theme = useTheme();
+
+    const userAuth = useSelector(selectUser);
+
+    const params = useParams<{testId: string}>();
+
+    useEffect(()=> {
+        signUpForTest();
+    },[userAuth])
+
+    const signUpForTest = async () => {
+        if(userAuth){
+            await axiosAuth.post('testing',{
+                params:{
+                    user:userAuth.user_id,
+                    test:params.testId,
+                }
+            }).then(function (response){
+                console.log('пользователь зареган на тест')
+            }).catch(function (error){
+                console.log(error.message)
+            })
+        }
+    }
 
     const [upperPanel, setUpperPanel] = React.useState(0);
 
@@ -269,3 +300,4 @@ export default function Test() {
         </div>
     );
 }
+export default withRouter(Test);

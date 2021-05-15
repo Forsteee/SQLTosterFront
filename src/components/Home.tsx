@@ -19,6 +19,7 @@ import { autoPlay } from 'react-swipeable-views-utils';
 import MobileStepper from '@material-ui/core/MobileStepper';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import {Route} from "react-router";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -141,8 +142,6 @@ export default function Reg() {
 
     const theme = useTheme();
 
-    const userAuthent = useSelector(selectUser);
-
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -163,35 +162,52 @@ export default function Reg() {
         setActiveStep(step);
     }
 
+    const handleStartTest = (testId:any) => {
+
+    }
+
+    const user = useSelector(selectUser);
+
     useEffect(()=>{
         loadTests();
-    }, [])
+    }, [user])
 
     const loadTests = async () => {
-    if(userAuthent){
-       await axios.get('http://localhost:3001/tests')
+    if(user){
+       await axios.get('http://localhost:3001/tests',
+           {
+               params:{
+                   logIn: true,
+               }
+           }
+           )
             .then(function (response){
-                setAllTests(response.data);
                 setLoading(true);
+                setAllTests(response.data);
             })
             .catch(function (error){
                 setLoading(true);
-                setError(error);
+                setError(error.message);
             })}
     else{
         //переделать под запрос на получение тестов для неавторизованных пользователей
-        await axios.get('http://localhost:3001/tests')
+        await axios.get('http://localhost:3001/tests',
+            {
+                params:{
+                    logIn: false,
+                }
+            }
+        )
             .then(function (response){
+                setLoading(true);
                 setAllTests(response.data);
-                setLoading(true);
             })
-            .catch(function (errors){
+            .catch(function (error){
                 setLoading(true);
-                setError(errors.message);
-                console.log(error)
-            })
-        }
+                setError(error.message);
+            })}
     }
+
     return (
         <div>
             <Container maxWidth="md" className={classes.mrg}>
@@ -261,7 +277,10 @@ export default function Reg() {
                                                 size='small'
                                                 variant="outlined"
                                                 color="default"
+                                                key={test.id}
                                                 className={classes.submit}
+                                                href={`/test/${test.id}`}
+                                                //onClick={(e)=>handleStartTest(test.id)}
                                             >
                                                 Начать
                                             </Button>
@@ -278,5 +297,5 @@ export default function Reg() {
                 {!loading && <CircularProgress/>}
             </Container>
         </div>
-    );
+    )
 }
