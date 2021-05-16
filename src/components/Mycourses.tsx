@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import HeaderForProfile from "./layouts/Headerforprofile";
 import Paper from "@material-ui/core/Paper";
@@ -15,6 +15,7 @@ import Box from '@material-ui/core/Box';
 import {useSelector} from "react-redux";
 import {selectUser} from "../features/userSlice";
 import axios from "axios";
+import {IUserForHeader} from "./interfaces/IUserForHeader";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -95,45 +96,96 @@ function CircularProgressWithLabel(props: CircularProgressProps & { value: numbe
 export default function MyCourses() {
     const classes = useStyles();
 
-    const userAuthent = useSelector(selectUser);// или отсюда данные юзера или аксиосом
+    const user = useSelector(selectUser);// или отсюда данные юзера или аксиосом
 
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
+    const [userAPI, setUserAPI] = useState<IUserForHeader>();
+
+    useEffect(()=>{
+        loaduser();
+        console.log(userAPI);
+    }, [user])
+
+    const loaduser = async ()=>{
+        if(user){
+            await axios.get(`http://localhost:3001/users/${user.user_id}`)
+                .then(function (response){
+                    console.log(response)
+                    setLoading(true);
+                    setUserAPI(response.data)
+                    //return response.data;
+                    }
+                ).catch(function (error){
+                    setLoading(true);
+                    setError(error.message);
+                    }
+                )
+        }
+    }
     //axios.get('http://localhost:3001/')
 
     return (
         <div className={classes.root}>
-            <HeaderForProfile name={'sdfsd'} img={'sdfsdf'} levelBrains={234} />
-            <Container maxWidth="sm" className={classes.main}>
-                <Typography component="div" variant="h5" className={classes.headT}>
-                    Мои курсы
-                </Typography>
-            <Paper className={classes.paper} elevation={3}>
-                <Grid container spacing={3} direction="row" justify="space-between" alignItems="center">
-                    <Grid item>
-                        <div className={classes.logotype}>
-                            <Link color="inherit" href='/'><Avatar src={imgsrc} variant="square" className={classes.imgP} /></Link>
-                            <Typography variant="h6" className={classes.nameforP}>
-                                <Link color="inherit" href='/' underline='none'><Hidden xsDown>{nameforPr}</Hidden></Link>
-                            </Typography>
-                        </div>
-                    </Grid>
-                    <Grid item>
-                        Пройдено {levelI}<br/>
-                        <CircularProgressWithLabel value={progress} /><br/>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="outlined"
-                            color="default"
-                            className={classes.submit}
-                        >
-                            Продолжить
-                        </Button>
-                    </Grid>
-                </Grid>
-            </Paper>
-            </Container>
+            {userAPI &&
+            <HeaderForProfile name={userAPI!.name} surname={userAPI!.surname} login={userAPI!.login} img={userAPI!.img} levelBrains={userAPI!.levelBrains}/>
+                &&
+                <Container maxWidth="md">
+                    <Paper className={classes.paper}>
+                        <Grid container spacing={3} direction="row" justify="space-between" alignItems="center">
+                            <Grid item>
+                                <div className={classes.logotype}>
+                                    <Link color="inherit" href='/'><Avatar src={userAPI.img} variant="square" className={classes.imgP} /></Link>
+                                    <Grid direction="column">
+                                    <Typography variant="h6" className={classes.nameforP}>
+                                        <Link color="inherit" href='/' underline='none'><Hidden xsDown>{userAPI.login} </Hidden></Link>
+                                    </Typography>
+                                    <Typography variant="h6" className={classes.nameforP}>
+                                        <Link color="inherit" href='/' underline='none'><Hidden xsDown>{userAPI.name} {userAPI.surname}</Hidden></Link>
+                                    </Typography>
+                                    </Grid>
+                                </div>
+                            </Grid>
+                            <Grid item>
+                                Уровень знаний<br/>
+                                {userAPI.levelBrains}<br/><br/>
+                                <Link color="primary" href='/editing'>Редактировать профиль</Link>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                    <Container maxWidth="sm" className={classes.main}>
+                        <Typography component="div" variant="h5" className={classes.headT}>
+                            Мои курсы
+                        </Typography>
+                            <Paper className={classes.paper} elevation={3}>
+                                <Grid container spacing={3} direction="row" justify="space-between" alignItems="center">
+                                    <Grid item>
+                                        <div className={classes.logotype}>
+                                            <Link color="inherit" href='/'><Avatar src={imgsrc} variant="square" className={classes.imgP} /></Link>
+                                            <Typography variant="h6" className={classes.nameforP}>
+                                                <Link color="inherit" href='/' underline='none'><Hidden xsDown>{nameforPr}</Hidden></Link>
+                                            </Typography>
+                                        </div>
+                                    </Grid>
+                                    <Grid item>
+                                        Пройдено {levelI}<br/>
+                                        <CircularProgressWithLabel value={progress} /><br/>
+                                        <Button
+                                            type="submit"
+                                            fullWidth
+                                            variant="outlined"
+                                            color="default"
+                                            className={classes.submit}
+                                        >
+                                            Продолжить
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                    </Container>
+                </Container>
+            }
         </div>
     );
 }

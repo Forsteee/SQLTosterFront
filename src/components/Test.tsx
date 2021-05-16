@@ -96,16 +96,21 @@ function Test(props: TestProps) {
 
     const params = useParams<{testId: string}>();
 
-    const [tasks,setTasks] = useState<ITasks[]>();
-    const [numbersTask,setNumberTask] = useState<number>(1);
-    let countTasks;
+    const [tasks,setTasks] = useState<ITasks[]>();// массив с заданиями определенного теста
+    const [numbersTask,setNumberTask] = useState<number>(1); // номер текущего задания на котором остановился пользователь (закладка)
+    const [finished,setFinished] = useState<boolean>(false); // отметка о завершении
+    let countTasks: number; // количество задания в тесте
+    const[testingUser,setTestingUser] = useState<{id:number,marker:number,finished:boolean}>();// тут лежит закладка и отметка о завершении
     useEffect(()=> {
         signUpForTest();
+        loadTesting();
     },[userAuth])
 
     useEffect(()=> {
         loadTasks();
     },[])
+    // добавляет запись в бд (привязвает пользователя к тесту и ставит закладку)
+    // если пользователь с тестом уже записаны в бд то ничего не делает
     const signUpForTest = async () => {
         if(userAuth){
             await axios.post('http://localhost:3001/testing',{
@@ -121,16 +126,42 @@ function Test(props: TestProps) {
            // console.log('войдите в систему')
         }
     }
+    // выгружает все задания данного теста
+    // и записывает количество заданий
     const loadTasks = async () => {
-            await axios.get(`http://localhost:3001/task/${params.testId}`).then(function (response){
-                console.log(response);
+            await axios.get(`http://localhost:3001/task/${params.testId}`).then(function (response) {
+                //console.log(response);
                 setTasks(response.data);
                 countTasks = response.data!.length;
                 console.log(countTasks);
-            }).catch(function (error){
+            }).catch(function (error) {
                 console.log(error.message)
             })
     }
+
+    // выгружает прогресс пользователя по тесту
+    // меняет стайты закладки и отметки о завершении
+    const loadTesting = async () => {
+        if (userAuth) {
+            await axios.get(`http://localhost:3001/testing/${userAuth.user_id}/${params.testId}`)
+                .then(function (response) {
+                    //console.log(response.data);
+                    setTestingUser(response.data);
+                    setNumberTask(response.data.marker);
+                    setFinished(response.data.finished);
+                }).catch(function (error){
+                    console.log(error.message);
+                })
+        }
+    }
+
+    const [answer, setAnswer] = React.useState('');// ответ пользователя
+    const [standart, setStandart] = React.useState('');
+
+    const handleChangeAnswer = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setAnswer(event.target.value);
+    };
+
 
     const [upperPanel, setUpperPanel] = React.useState(0);
 
@@ -156,13 +187,7 @@ function Test(props: TestProps) {
         setOpenSnackErToReq(false);
     };
 
-    const [answer, setAnswer] = React.useState('');
 
-    const handleChangeAnswer = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAnswer(event.target.value);
-    };
-
-    const [standart, setStandart] = React.useState('Эталон из БД');
 
     const bodyParameters = {
         request: answer,
@@ -172,7 +197,6 @@ function Test(props: TestProps) {
     const [rows, setRows] = useState<[]>([]);// строки ебать для таблицы
 
     const handleClickReq = async () => {
-        setNumberTask(2);
         await axiosAuth.post('/testingapi',
             bodyParameters)
             .then(function (response){
@@ -198,8 +222,44 @@ function Test(props: TestProps) {
             })
     }
 
+    // кнопка на переход к след заданию
+    // очистить поле ввода
+    // (сменить задание
+    // сменить эталон
+    // сменить скрин бд) => меняется с сетнумбертаском
+    // очистить результат запроса
+    //!!!!!!СДЕЛАТЬ ЛОГИКУ ФИНИША, МЕНЯТЬ СОДЕРЖИМОЕ СТРАНИЦЫ ИЛИ МЕНЯТЬ ФУНКЦИОНАЛ КНОПКИ (ПЕРЕЙТИ НА ГЛАВНУЮ НАПРИМЕР)!!!!!!!!!!!
+    const hadleClickNextTask = async () => {
+        setAnswer('');// очистка поля ввода
+        setColumns([]);// чистим
+        setRows([]);// вывод
+        if(numbersTask === countTasks){
+            setFinished(true);
+            await axios.put(`http://localhost:3001/testing/${testingUser!.id}`,{
+                marker: numbersTask,
+                finished: true,
+            }).then(function (response){
+                console.log(response)
+            }).catch(function (error){
+                console.log(error)
+            })
+        }else{
+            setNumberTask((prev) => { return prev + 1})
+            await axios.put(`http://localhost:3001/testing/${testingUser!.id}`,{
+                marker: numbersTask + 1,
+                finished: false,
+            }).then(function (response){
+                console.log(response)
+            }).catch(function (error){
+                console.log(error)
+            })
+        }
+    }
+    const db = '<iframe width = "100%" height = "500px" style = "box-shadow: 0 2px 8px 0 rgba (63,69,81,0.16); border-radius: 15px;" allowtransparency = "true" allowfullscreen = "true" scrolling = "no" title = "Встроенный IFrame DrawSQL" frameborder = "0" src = "https://drawsql.app/sqltoster/diagrams/car/embed"> </ iframe >';
+
     return (
         <div>
+            {tasks &&
             <Container maxWidth="md" className={classes.main}>
                 <Grid container
                       direction="column"
@@ -229,7 +289,7 @@ function Test(props: TestProps) {
                         <Grid container spacing={3} className={classes.faq}>
                             <Grid item xs={4}>
                                 <Paper elevation={3}>
-                                    задание
+                                    {tasks![(numbersTask - 1)].description}
                                 </Paper>
                             </Grid>
                             <Grid item xs={8}>
@@ -275,7 +335,7 @@ function Test(props: TestProps) {
                                             rows={5}
                                             placeholder="Поле ввода"
                                             variant="outlined"
-                                            value={standart}
+                                            value={tasks![(numbersTask - 1)].standard}
                                             fullWidth
                                             disabled
                                         />
@@ -300,22 +360,31 @@ function Test(props: TestProps) {
                         </AppBar>
                         <div className={classes.heightT}>
                             <TabPanel value={lowPanel} index={0} dir={theme.direction}>
-                                <TextField
+                                {/*<TextField
                                     id=""
                                     multiline
                                     rows={20}
                                     placeholder="Схема БД"
                                     variant="outlined"
                                     fullWidth
-                                />
+                                />*/}
+                                <div dangerouslySetInnerHTML={{__html: db}} />
                             </TabPanel>
                             <TabPanel value={lowPanel} index={1} dir={theme.direction}>
                                 <DataGrid rows={rows} columns={columns} pageSize={7} autoHeight={true} />
                             </TabPanel>
                         </div>
                     </Grid>
+                    <Button variant="contained"
+                            size="small"
+                            color="primary"
+                            onClick={hadleClickNextTask}
+                    >
+                        Перейти к следующему заданию
+                    </Button>
                 </Grid>
             </Container>
+            }
         </div>
     );
 }

@@ -48,7 +48,7 @@ export default function HeaderForProfile(user:IUserForHeader) {
                     <div className={classes.logotype}>
                         <Link color="inherit" href='/'><Avatar src={user.img} variant="square" className={classes.imgP} /></Link>
                         <Typography variant="h6" className={classes.nameforP}>
-                            <Link color="inherit" href='/' underline='none'><Hidden xsDown>{user.name}</Hidden></Link>
+                            <Link color="inherit" href='/' underline='none'><Hidden xsDown>{user.name} {user.surname}</Hidden></Link>
                         </Typography>
                     </div>
                 </Grid>
