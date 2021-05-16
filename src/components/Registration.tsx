@@ -101,7 +101,6 @@ export default function SignUp() {
             .then(function(response){
                 if(response.data !== ''){
                     loginR();
-                    goHome();
                 }else{
                     console.log('Пользователь зареган, ебани алерт (введите другой логин)');
                 }

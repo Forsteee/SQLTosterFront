@@ -18,6 +18,7 @@ import {withRouter, RouteComponentProps, useParams} from "react-router";
 import axios from "axios";
 import {useSelector} from "react-redux";
 import {selectUser} from "../features/userSlice";
+import {ITasks} from "./interfaces/ITasks";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -95,23 +96,40 @@ function Test(props: TestProps) {
 
     const params = useParams<{testId: string}>();
 
+    const [tasks,setTasks] = useState<ITasks[]>();
+    const [numbersTask,setNumberTask] = useState<number>(1);
+    let countTasks;
     useEffect(()=> {
         signUpForTest();
     },[userAuth])
 
+    useEffect(()=> {
+        loadTasks();
+    },[])
     const signUpForTest = async () => {
         if(userAuth){
-            await axiosAuth.post('testing',{
-                params:{
-                    user:userAuth.user_id,
-                    test:params.testId,
-                }
+            await axios.post('http://localhost:3001/testing',{
+                userId:userAuth.user_id,
+                testId:params.testId
             }).then(function (response){
-                console.log('пользователь зареган на тест')
+                /*console.log('пользователь зареган на тест')
+                console.log(response)*/
+            }).catch(function (error){
+                //console.log(error.message)
+            })
+        }else{
+           // console.log('войдите в систему')
+        }
+    }
+    const loadTasks = async () => {
+            await axios.get(`http://localhost:3001/task/${params.testId}`).then(function (response){
+                console.log(response);
+                setTasks(response.data);
+                countTasks = response.data!.length;
+                console.log(countTasks);
             }).catch(function (error){
                 console.log(error.message)
             })
-        }
     }
 
     const [upperPanel, setUpperPanel] = React.useState(0);
@@ -154,6 +172,7 @@ function Test(props: TestProps) {
     const [rows, setRows] = useState<[]>([]);// строки ебать для таблицы
 
     const handleClickReq = async () => {
+        setNumberTask(2);
         await axiosAuth.post('/testingapi',
             bodyParameters)
             .then(function (response){
@@ -207,63 +226,63 @@ function Test(props: TestProps) {
                         </Alert>
                     </Snackbar>
                     <Grid item>
-                <Grid container spacing={3} className={classes.faq}>
-                    <Grid item xs={4}>
-                        <Paper elevation={3}>
-                            задание
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <AppBar position="static" color="default">
-                            <Tabs
-                                value={upperPanel}
-                                onChange={handleChangeUpperPanel}
-                                indicatorColor="primary"
-                                textColor="primary"
-                                variant="fullWidth"
-                                aria-label="full width tabs example"
-                            >
-                                <Tab label="Поле ввода" {...a11yProps(0)} />
-                                <Tab label="Эталон" {...a11yProps(1)} />
-                            </Tabs>
-                        </AppBar>
-                        <div className={classes.heightT}>
-                            <TabPanel value={upperPanel} index={0} dir={theme.direction}>
-                                <TextField
-                                    id=""
-                                    multiline
-                                    rows={5}
-                                    placeholder="Поле ввода"
-                                    variant="outlined"
-                                    value={answer}
-                                    onChange={handleChangeAnswer}
-                                    fullWidth
-                                />
-                                <div className={classes.rightB}>
-                                <Button variant="contained"
-                                        size="small"
-                                        color="primary"
-                                        onClick={handleClickReq}
-                                >
-                                    Отправить
-                                </Button>
+                        <Grid container spacing={3} className={classes.faq}>
+                            <Grid item xs={4}>
+                                <Paper elevation={3}>
+                                    задание
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <AppBar position="static" color="default">
+                                    <Tabs
+                                        value={upperPanel}
+                                        onChange={handleChangeUpperPanel}
+                                        indicatorColor="primary"
+                                        textColor="primary"
+                                        variant="fullWidth"
+                                        aria-label="full width tabs example"
+                                    >
+                                        <Tab label="Поле ввода" {...a11yProps(0)} />
+                                        <Tab label="Эталон" {...a11yProps(1)} />
+                                    </Tabs>
+                                </AppBar>
+                                <div className={classes.heightT}>
+                                    <TabPanel value={upperPanel} index={0} dir={theme.direction}>
+                                        <TextField
+                                            id=""
+                                            multiline
+                                            rows={5}
+                                            placeholder="Поле ввода"
+                                            variant="outlined"
+                                            value={answer}
+                                            onChange={handleChangeAnswer}
+                                            fullWidth
+                                        />
+                                        <div className={classes.rightB}>
+                                        <Button variant="contained"
+                                                size="small"
+                                                color="primary"
+                                                onClick={handleClickReq}
+                                        >
+                                            Отправить
+                                        </Button>
+                                        </div>
+                                    </TabPanel>
+                                    <TabPanel value={upperPanel} index={1} dir={theme.direction}>
+                                        <TextField
+                                            id=""
+                                            multiline
+                                            rows={5}
+                                            placeholder="Поле ввода"
+                                            variant="outlined"
+                                            value={standart}
+                                            fullWidth
+                                            disabled
+                                        />
+                                    </TabPanel>
                                 </div>
-                            </TabPanel>
-                            <TabPanel value={upperPanel} index={1} dir={theme.direction}>
-                                <TextField
-                                    id=""
-                                    multiline
-                                    rows={5}
-                                    placeholder="Поле ввода"
-                                    variant="outlined"
-                                    value={standart}
-                                    fullWidth
-                                    disabled
-                                />
-                            </TabPanel>
-                        </div>
-                    </Grid>
-                </Grid>
+                            </Grid>
+                        </Grid>
                     </Grid>
                     <Grid item>
                         <AppBar position="static" color="default">

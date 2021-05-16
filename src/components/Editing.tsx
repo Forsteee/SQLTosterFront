@@ -63,7 +63,10 @@ const useStyles = makeStyles((theme: Theme) =>
             margin:'5px',
         },
         bloc:{
-
+            paddingTop:'20px',
+        },
+        pad:{
+         paddingTop:'20px',
         },
     }),
 );
@@ -96,36 +99,32 @@ export default function Editing(){
                 <Grid item xs={2}>
                     <Link color="inherit" href='/mycourses'>Мои курсы</Link>
                 </Grid>
-                <Grid item xs={10}>
-                    <Grid>
-                        <Typography component="div" variant="h6" >
-                            Имя*
-                        </Typography>
+                <Grid item xs={10} >
+                    <Grid className={classes.pad}>
                     <TextField
                         className={classes.inputBColor}
+                        variant="outlined"
                         required
                         fullWidth
                         id="name"
-                        placeholder="name"
+                        label="Имя"
                         name="name"
                         autoComplete="name"
                     />
                     </Grid>
-                    <Grid>
-                        <Typography component="div" variant="h6" >
-                            Фамилия*
-                        </Typography>
+                    <Grid className={classes.pad}>
                     <TextField
                         className={classes.inputBColor}
+                        variant="outlined"
                         required
                         fullWidth
                         id="surname"
-                        placeholder="surname"
+                        label="Фамилия"
                         name="surname"
                         autoComplete="surname"
                     />
                     </Grid>
-                    <Grid>
+                    <Grid className={classes.pad}>
                         <Typography component="div" variant="h6" >
                             Email
                         </Typography>
@@ -139,8 +138,10 @@ export default function Editing(){
                         >
                             Редактировать
                         </Button>
+                        <Grid className={classes.pad}>
                         <TextField
                             className={classes.inputBColor}
+                            variant="outlined"
                             required
                             fullWidth
                             style = {styles}
@@ -149,8 +150,11 @@ export default function Editing(){
                             name="currentEmail"
                             autoComplete="currentEmail"
                         />
+                        </Grid>
+                        <Grid className={classes.pad}>
                         <TextField
                             className={classes.inputBColor}
+                            variant="outlined"
                             required
                             fullWidth
                             style = {styles}
@@ -159,8 +163,8 @@ export default function Editing(){
                             name="newEmail"
                             autoComplete="newEmail"
                         />
-                        <Grid container className={classes.bloc}>
-                            <Grid item xs={6}>
+                        </Grid>
+                        <Grid item xs={12} spacing={2}>
                         <Button
                             variant="contained"
                             color="default"
@@ -169,8 +173,8 @@ export default function Editing(){
                         >
                             Изменить
                         </Button>
-                            </Grid>
-                            <Grid item xs={6}>
+                        </Grid>
+                        <Grid item xs={12} spacing={2}>
                         <Button
                             variant="contained"
                             color="secondary"
@@ -180,10 +184,9 @@ export default function Editing(){
                         >
                             Отмена
                         </Button>
-                            </Grid>
                         </Grid>
                     </Grid>
-                    <Grid>
+                    <Grid className={classes.pad}>
                         <Typography component="div" variant="h6" >
                             Аватарка
                         </Typography>
@@ -215,7 +218,7 @@ export default function Editing(){
                             </Button>
                         </label>
                     </div>
-                    </Grid>
+                    </Grid >
                     <Button
                         type="submit"
                         fullWidth

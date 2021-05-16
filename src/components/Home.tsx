@@ -172,14 +172,10 @@ export default function Reg() {
         loadTests();
     }, [user])
 
+
     const loadTests = async () => {
     if(user){
-       await axios.get('http://localhost:3001/tests',
-           {
-               params:{
-                   logIn: true,
-               }
-           }
+       await axios.get(`http://localhost:3001/tests/allauth/${true}`
            )
             .then(function (response){
                 setLoading(true);
@@ -191,12 +187,7 @@ export default function Reg() {
             })}
     else{
         //переделать под запрос на получение тестов для неавторизованных пользователей
-        await axios.get('http://localhost:3001/tests',
-            {
-                params:{
-                    logIn: false,
-                }
-            }
+        await axios.get(`http://localhost:3001/tests/allauth/${false}`
         )
             .then(function (response){
                 setLoading(true);
