@@ -37,6 +37,11 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         borderC:{
         },
+        btnH:{
+            marginTop:'35%',
+        },
+        contH:{
+        },
     }),
 );
 
@@ -94,49 +99,59 @@ function Test(props: TestProps) {
 
     const userAuth = useSelector(selectUser);
 
-    const params = useParams<{testId: string}>();
+    const params = useParams<{ testId: string }>();
 
-    const [tasks,setTasks] = useState<ITasks[]>();// массив с заданиями определенного теста
-    const [numbersTask,setNumberTask] = useState<number>(1); // номер текущего задания на котором остановился пользователь (закладка)
-    const [finished,setFinished] = useState<boolean>(false); // отметка о завершении
-    let countTasks: number; // количество задания в тесте
-    const[testingUser,setTestingUser] = useState<{id:number,marker:number,finished:boolean}>();// тут лежит закладка и отметка о завершении
-    useEffect(()=> {
+    const [tasks, setTasks] = useState<ITasks[]>();// массив с заданиями определенного теста
+    const [numbersTask, setNumberTask] = useState<number>(1); // номер текущего задания на котором остановился пользователь (закладка)
+    const [finished, setFinished] = useState<boolean>(false); // отметка о завершении
+    const [countTasks, setCountTasks] = useState<number>(1); // количество заданий в тесте
+    const [testingUser, setTestingUser] = useState<{ id: number, marker: number, finished: boolean }>();// тут лежит закладка и отметка о завершении
+    const [integrationLink,setIntegrationLink] = useState<string>('');
+    useEffect(() => {
         signUpForTest();
         loadTesting();
-    },[userAuth])
+    }, [userAuth])
 
-    useEffect(()=> {
+    useEffect(() => {
         loadTasks();
-    },[])
+        loadingDBPicture();
+    }, [])
+
+    const loadingDBPicture = async () => {
+            await axios.get(`http://localhost:3001/tests/${params.testId}`).then(function (response) {
+                setIntegrationLink(response.data.integrationLink);
+            }).catch(function (error) {
+                console.log(error.message)
+            })
+    }
     // добавляет запись в бд (привязвает пользователя к тесту и ставит закладку)
     // если пользователь с тестом уже записаны в бд то ничего не делает
     const signUpForTest = async () => {
-        if(userAuth){
-            await axios.post('http://localhost:3001/testing',{
-                userId:userAuth.user_id,
-                testId:params.testId
-            }).then(function (response){
+        if (userAuth) {
+            await axios.post('http://localhost:3001/testing', {
+                userId: userAuth.user_id,
+                testId: params.testId
+            }).then(function (response) {
                 /*console.log('пользователь зареган на тест')
                 console.log(response)*/
-            }).catch(function (error){
+            }).catch(function (error) {
                 //console.log(error.message)
             })
-        }else{
-           // console.log('войдите в систему')
+        } else {
+            // console.log('войдите в систему')
         }
     }
     // выгружает все задания данного теста
     // и записывает количество заданий
     const loadTasks = async () => {
-            await axios.get(`http://localhost:3001/task/${params.testId}`).then(function (response) {
-                //console.log(response);
-                setTasks(response.data);
-                countTasks = response.data!.length;
-                console.log(countTasks);
-            }).catch(function (error) {
-                console.log(error.message)
-            })
+        await axios.get(`http://localhost:3001/task/${params.testId}`).then(function (response) {
+            //console.log(response);
+            setTasks(response.data);
+            setCountTasks(response.data!.length);
+            console.log(countTasks);
+        }).catch(function (error) {
+            console.log(error.message)
+        })
     }
 
     // выгружает прогресс пользователя по тесту
@@ -149,7 +164,10 @@ function Test(props: TestProps) {
                     setTestingUser(response.data);
                     setNumberTask(response.data.marker);
                     setFinished(response.data.finished);
-                }).catch(function (error){
+                    if(response.data.finished){
+                    window.location.assign('http://localhost:3000/')
+                    }
+                }).catch(function (error) {
                     console.log(error.message);
                 })
         }
@@ -188,35 +206,34 @@ function Test(props: TestProps) {
     };
 
 
-
     const bodyParameters = {
         request: answer,
     };
-    const [res,setRes] = useState('');
-    const [columns,setColumns] = useState<GridColDef[]>([]);// колонки ебать для таблицы
+    const [res, setRes] = useState('');
+    const [columns, setColumns] = useState<GridColDef[]>([]);// колонки ебать для таблицы
     const [rows, setRows] = useState<[]>([]);// строки ебать для таблицы
 
     const handleClickReq = async () => {
         await axiosAuth.post('/testingapi',
             bodyParameters)
-            .then(function (response){
-                if(isObject(response.data[0])){
+            .then(function (response) {
+                if (isObject(response.data[0])) {
                     // заполнение колонок
                     const columnsFromRes = Object.keys(response.data[0]);
                     let columnsForColDef: GridColDef[] = [];
-                    columnsFromRes.forEach((item:string)=>{
-                        columnsForColDef.push({ field: item, headerName: item })
+                    columnsFromRes.forEach((item: string) => {
+                        columnsForColDef.push({field: item, headerName: item})
                     })
                     setColumns(columnsForColDef);
                     //заполнение строк
                     setRows(response.data);
                     setOpenSnackS(true);
-                }else{
+                } else {
                     //сообщение об ошибке
                     setRes(response.data.message);
                     setOpenSnackErToReq(true);
                 }
-            }).catch(function (error){
+            }).catch(function (error) {
                 console.log(error);
                 setOpenSnackEr(true);
             })
@@ -224,38 +241,39 @@ function Test(props: TestProps) {
 
     // кнопка на переход к след заданию
     // очистить поле ввода
-    // (сменить задание
+    // сменить задание
     // сменить эталон
-    // сменить скрин бд) => меняется с сетнумбертаском
     // очистить результат запроса
-    //!!!!!!СДЕЛАТЬ ЛОГИКУ ФИНИША, МЕНЯТЬ СОДЕРЖИМОЕ СТРАНИЦЫ ИЛИ МЕНЯТЬ ФУНКЦИОНАЛ КНОПКИ (ПЕРЕЙТИ НА ГЛАВНУЮ НАПРИМЕР)!!!!!!!!!!!
-    const hadleClickNextTask = async () => {
+    const handleClickNextTask = async () => {//
         setAnswer('');// очистка поля ввода
         setColumns([]);// чистим
         setRows([]);// вывод
-        if(numbersTask === countTasks){
+        setNumberTask((prev) => {
+            return prev + 1
+        })
+        if ((numbersTask + 1) === countTasks) {
             setFinished(true);
-            await axios.put(`http://localhost:3001/testing/${testingUser!.id}`,{
-                marker: numbersTask,
-                finished: true,
-            }).then(function (response){
-                console.log(response)
-            }).catch(function (error){
-                console.log(error)
-            })
-        }else{
-            setNumberTask((prev) => { return prev + 1})
-            await axios.put(`http://localhost:3001/testing/${testingUser!.id}`,{
-                marker: numbersTask + 1,
-                finished: false,
-            }).then(function (response){
-                console.log(response)
-            }).catch(function (error){
-                console.log(error)
-            })
         }
+        await axios.put(`http://localhost:3001/testing/${testingUser!.id}`, {
+            marker: numbersTask + 1,
+            finished: finished,
+        }).then(function (response) {
+            console.log(response)
+        }).catch(function (error) {
+            console.log(error)
+        })
     }
-    const db = '<iframe width = "100%" height = "500px" style = "box-shadow: 0 2px 8px 0 rgba (63,69,81,0.16); border-radius: 15px;" allowtransparency = "true" allowfullscreen = "true" scrolling = "no" title = "Встроенный IFrame DrawSQL" frameborder = "0" src = "https://drawsql.app/sqltoster/diagrams/car/embed"> </ iframe >';
+    const handleClickFinished = async () => {
+        await axios.put(`http://localhost:3001/testing/${testingUser!.id}`, {
+            marker: numbersTask,
+            finished: finished,
+        }).then(function (response) {
+            console.log(response)
+        }).catch(function (error) {
+            console.log(error)
+        })
+        window.location.assign('http://localhost:3000/')
+    }
 
     return (
         <div>
@@ -277,7 +295,7 @@ function Test(props: TestProps) {
                         </Alert>
                     </Snackbar>
                     <Snackbar
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                         open={openSnackErToReq}
                         onClose={handleCloseSnack}
                     >
@@ -319,13 +337,13 @@ function Test(props: TestProps) {
                                             fullWidth
                                         />
                                         <div className={classes.rightB}>
-                                        <Button variant="contained"
-                                                size="small"
-                                                color="primary"
-                                                onClick={handleClickReq}
-                                        >
-                                            Отправить
-                                        </Button>
+                                            <Button variant="contained"
+                                                    size="small"
+                                                    color="primary"
+                                                    onClick={handleClickReq}
+                                            >
+                                                Отправить
+                                            </Button>
                                         </div>
                                     </TabPanel>
                                     <TabPanel value={upperPanel} index={1} dir={theme.direction}>
@@ -360,28 +378,33 @@ function Test(props: TestProps) {
                         </AppBar>
                         <div className={classes.heightT}>
                             <TabPanel value={lowPanel} index={0} dir={theme.direction}>
-                                {/*<TextField
-                                    id=""
-                                    multiline
-                                    rows={20}
-                                    placeholder="Схема БД"
-                                    variant="outlined"
-                                    fullWidth
-                                />*/}
-                                <div dangerouslySetInnerHTML={{__html: db}} />
+                                <div dangerouslySetInnerHTML={{__html: integrationLink}}/>
                             </TabPanel>
-                            <TabPanel value={lowPanel} index={1} dir={theme.direction}>
+                            <TabPanel value={lowPanel} index={1} dir={theme.direction} >
                                 <DataGrid rows={rows} columns={columns} pageSize={7} autoHeight={true} />
                             </TabPanel>
                         </div>
                     </Grid>
-                    <Button variant="contained"
-                            size="small"
-                            color="primary"
-                            onClick={hadleClickNextTask}
-                    >
-                        Перейти к следующему заданию
-                    </Button>
+                    <Grid>
+                    {finished ?
+                        <Button variant="contained"
+                                         size="small"
+                                         color="primary"
+                                         onClick={handleClickFinished}
+                        >
+                            Завершить тест
+                        </Button>
+                    :
+                        <Button variant="contained"
+                                size="small"
+                                color="primary"
+                                className={classes.btnH}
+                                onClick={handleClickNextTask}
+                        >
+                            Перейти к следующему заданию
+                        </Button>
+                    }
+                    </Grid>
                 </Grid>
             </Container>
             }

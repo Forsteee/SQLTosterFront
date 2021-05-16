@@ -4,5 +4,7 @@ export interface ITests {
     readonly level: string;
     readonly type: string;
     readonly description: string;
-    readonly  img: string;
+    readonly img: string;
+    readonly integrationLink: string;
+    readonly logIn: boolean;
 }
