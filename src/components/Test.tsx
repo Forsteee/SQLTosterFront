@@ -11,7 +11,6 @@ import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import axiosAuth from "./api/AxiosConfig";
-import { DataGrid, GridColDef } from '@material-ui/data-grid';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import {withRouter, RouteComponentProps, useParams} from "react-router";
@@ -19,6 +18,9 @@ import axios from "axios";
 import {useSelector} from "react-redux";
 import {selectUser} from "../features/userSlice";
 import {ITasks} from "./interfaces/ITasks";
+import Divider from '@material-ui/core/Divider';
+import ListItemText from '@material-ui/core/ListItemText';
+import { DataGrid, GridColDef } from '@material-ui/data-grid';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -42,6 +44,10 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         contH:{
         },
+        ptpl:{
+            paddingTop: '7px',
+            paddingLeft: '7px',
+        }
     }),
 );
 
@@ -174,12 +180,10 @@ function Test(props: TestProps) {
     }
 
     const [answer, setAnswer] = React.useState('');// ответ пользователя
-    const [standart, setStandart] = React.useState('');
 
     const handleChangeAnswer = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAnswer(event.target.value);
     };
-
 
     const [upperPanel, setUpperPanel] = React.useState(0);
 
@@ -211,11 +215,14 @@ function Test(props: TestProps) {
     };
     const [res, setRes] = useState('');
     const [columns, setColumns] = useState<GridColDef[]>([]);// колонки ебать для таблицы
-    const [rows, setRows] = useState<[]>([]);// строки ебать для таблицы
+    const [rows, setRows] = useState<any>([]);// строки ебать для таблицы
+    const [eqPercent,setEqPersent] = useState();
+    const [showStandart,setShowStandart] = useState(true);
 
     const handleClickReq = async () => {
-        await axiosAuth.post('/testingapi',
-            bodyParameters)
+        await axiosAuth.post('/testingapi/req',
+            bodyParameters
+            )
             .then(function (response) {
                 if (isObject(response.data[0])) {
                     // заполнение колонок
@@ -223,16 +230,30 @@ function Test(props: TestProps) {
                     let columnsForColDef: GridColDef[] = [];
                     columnsFromRes.forEach((item: string) => {
                         columnsForColDef.push({field: item, headerName: item})
+                        console.log(item);
                     })
                     setColumns(columnsForColDef);
                     //заполнение строк
-                    setRows(response.data);
+                    setRows(Object.values(response.data));
+                    setShowStandart(false);
                     setOpenSnackS(true);
                 } else {
                     //сообщение об ошибке
                     setRes(response.data.message);
                     setOpenSnackErToReq(true);
                 }
+            }).catch(function (error) {
+                console.log(error);
+                setOpenSnackEr(true);
+            })
+        await axiosAuth.post('/testingapi/eqPercent',
+            {
+                request: answer,
+                standart: tasks![(numbersTask - 1)].standard,
+            }
+        ).then(function (response) {
+            // в этом респонсе fpercent процент совпадения с эталоном
+            setEqPersent(response.data);
             }).catch(function (error) {
                 console.log(error);
                 setOpenSnackEr(true);
@@ -248,6 +269,8 @@ function Test(props: TestProps) {
         setAnswer('');// очистка поля ввода
         setColumns([]);// чистим
         setRows([]);// вывод
+        setEqPersent(undefined);
+        setShowStandart(true);
         setNumberTask((prev) => {
             return prev + 1
         })
@@ -277,136 +300,152 @@ function Test(props: TestProps) {
 
     return (
         <div>
-            {tasks &&
-            <Container maxWidth="md" className={classes.main}>
-                <Grid container
-                      direction="column"
-                      justify="center"
-                      className={classes.borderC}
-                >
-                    <Snackbar open={openSnackS} autoHideDuration={6000} onClose={handleCloseSnack}>
-                        <Alert onClose={handleCloseSnack} severity="success">
-                            Запрос выполнен, результат во вкладке 'Результат запроса'!
-                        </Alert>
-                    </Snackbar>
-                    <Snackbar open={openSnackEr} autoHideDuration={6000} onClose={handleCloseSnack}>
-                        <Alert onClose={handleCloseSnack} severity="error">
-                            Уууупс, произошла ошибка!
-                        </Alert>
-                    </Snackbar>
-                    <Snackbar
-                        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-                        open={openSnackErToReq}
-                        onClose={handleCloseSnack}
+            {tasks ?
+                <Container maxWidth="md" className={classes.main}>
+                    <Grid container
+                          direction="column"
+                          justify="center"
+                          className={classes.borderC}
                     >
-                        <Alert onClose={handleCloseSnack} severity="error">
-                            {res}
-                        </Alert>
-                    </Snackbar>
-                    <Grid item>
-                        <Grid container spacing={3} className={classes.faq}>
-                            <Grid item xs={4}>
-                                <Paper elevation={3}>
-                                    {tasks![(numbersTask - 1)].description}
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <AppBar position="static" color="default">
-                                    <Tabs
-                                        value={upperPanel}
-                                        onChange={handleChangeUpperPanel}
-                                        indicatorColor="primary"
-                                        textColor="primary"
-                                        variant="fullWidth"
-                                        aria-label="full width tabs example"
-                                    >
-                                        <Tab label="Поле ввода" {...a11yProps(0)} />
-                                        <Tab label="Эталон" {...a11yProps(1)} />
-                                    </Tabs>
-                                </AppBar>
-                                <div className={classes.heightT}>
-                                    <TabPanel value={upperPanel} index={0} dir={theme.direction}>
-                                        <TextField
-                                            id=""
-                                            multiline
-                                            rows={5}
-                                            placeholder="Поле ввода"
-                                            variant="outlined"
-                                            value={answer}
-                                            onChange={handleChangeAnswer}
-                                            fullWidth
-                                        />
-                                        <div className={classes.rightB}>
-                                            <Button variant="contained"
-                                                    size="small"
-                                                    color="primary"
-                                                    onClick={handleClickReq}
+                        <Snackbar open={openSnackS} autoHideDuration={6000} onClose={handleCloseSnack}>
+                            <Alert onClose={handleCloseSnack} severity="success">
+                                Запрос выполнен, результат во вкладке 'Результат запроса'!
+                            </Alert>
+                        </Snackbar>
+                        <Snackbar open={openSnackEr} autoHideDuration={6000} onClose={handleCloseSnack}>
+                            <Alert onClose={handleCloseSnack} severity="error">
+                                Уууупс, произошла ошибка!
+                            </Alert>
+                        </Snackbar>
+                        <Snackbar
+                            anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                            open={openSnackErToReq}
+                            onClose={handleCloseSnack}
+                        >
+                            <Alert onClose={handleCloseSnack} severity="error">
+                                {res}
+                            </Alert>
+                        </Snackbar>
+                        <Grid item>
+                            <Grid container spacing={3} className={classes.faq}>
+                                <Grid item xs={4}>
+                                    <Paper elevation={3} className={classes.ptpl}>
+                                        <ListItemText primary={tasks![(numbersTask - 1)].description}/>
+                                        <Divider/>
+                                        <ListItemText primary={tasks![(numbersTask - 1)].recommendation}/>
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <AppBar position="static" color="default">
+                                        <Tabs
+                                            value={upperPanel}
+                                            onChange={handleChangeUpperPanel}
+                                            indicatorColor="primary"
+                                            textColor="primary"
+                                            variant="fullWidth"
+                                            aria-label="full width tabs example"
+                                        >
+                                            <Tab label="Поле ввода" {...a11yProps(0)} />
+                                            <Tab disabled={showStandart} label="Эталон" {...a11yProps(1)} />
+                                        </Tabs>
+                                    </AppBar>
+                                    <div className={classes.heightT}>
+                                        <TabPanel value={upperPanel} index={0} dir={theme.direction}>
+                                            <TextField
+                                                id=""
+                                                multiline
+                                                rows={5}
+                                                placeholder="Поле ввода"
+                                                variant="outlined"
+                                                value={answer}
+                                                onChange={handleChangeAnswer}
+                                                fullWidth
+                                            />
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justify="space-between"
                                             >
-                                                Отправить
-                                            </Button>
-                                        </div>
-                                    </TabPanel>
-                                    <TabPanel value={upperPanel} index={1} dir={theme.direction}>
-                                        <TextField
-                                            id=""
-                                            multiline
-                                            rows={5}
-                                            placeholder="Поле ввода"
-                                            variant="outlined"
-                                            value={tasks![(numbersTask - 1)].standard}
-                                            fullWidth
-                                            disabled
-                                        />
-                                    </TabPanel>
-                                </div>
+                                                {eqPercent ?
+                                                    <ListItemText
+                                                        primary={`Процент совпадения с эталоном: ${Math.round(eqPercent!)} %`}/>
+                                                    :
+                                                    <div></div>
+                                                }
+                                                <div className={classes.rightB}>
+                                                    <Button variant="contained"
+                                                            size="small"
+                                                            color="primary"
+                                                            onClick={handleClickReq}
+                                                    >
+                                                        Отправить
+                                                    </Button>
+                                                </div>
+                                            </Grid>
+                                        </TabPanel>
+                                        <TabPanel value={upperPanel} index={1} dir={theme.direction}>
+                                            <TextField
+                                                id=""
+                                                multiline
+                                                rows={5}
+                                                placeholder="Поле ввода"
+                                                variant="outlined"
+                                                value={tasks![(numbersTask - 1)].standard}
+                                                fullWidth
+                                                aria-readonly={true}
+                                            />
+                                        </TabPanel>
+                                    </div>
+                                </Grid>
                             </Grid>
                         </Grid>
+                        <Grid item>
+                            <AppBar position="static" color="default">
+                                <Tabs
+                                    value={lowPanel}
+                                    onChange={handleChangeLowPanel}
+                                    indicatorColor="primary"
+                                    textColor="primary"
+                                    variant="fullWidth"
+                                    aria-label="full width tabs example"
+                                >
+                                    <Tab label="Схема базы данных" {...a11yProps(0)} />
+                                    <Tab label="Результат запроса" {...a11yProps(1)} />
+                                </Tabs>
+                            </AppBar>
+                            <div className={classes.heightT}>
+                                <TabPanel value={lowPanel} index={0} dir={theme.direction}>
+                                    <div dangerouslySetInnerHTML={{__html: integrationLink}}/>
+                                </TabPanel>
+                                <TabPanel value={lowPanel} index={1} dir={theme.direction}>
+                                    <DataGrid rows={rows} columns={columns} pageSize={7} autoHeight={true}/>
+                                </TabPanel>
+                            </div>
+                        </Grid>
+                        <Grid>
+                            {finished ?
+                                <Button variant="contained"
+                                        size="small"
+                                        color="primary"
+                                        onClick={handleClickFinished}
+                                >
+                                    Завершить тест
+                                </Button>
+                                :
+                                <Button variant="contained"
+                                        size="small"
+                                        color="primary"
+                                        className={classes.btnH}
+                                        onClick={handleClickNextTask}
+                                >
+                                    Перейти к следующему заданию
+                                </Button>
+                            }
+                        </Grid>
                     </Grid>
-                    <Grid item>
-                        <AppBar position="static" color="default">
-                            <Tabs
-                                value={lowPanel}
-                                onChange={handleChangeLowPanel}
-                                indicatorColor="primary"
-                                textColor="primary"
-                                variant="fullWidth"
-                                aria-label="full width tabs example"
-                            >
-                                <Tab label="Схема базы данных" {...a11yProps(0)} />
-                                <Tab label="Результат запроса" {...a11yProps(1)} />
-                            </Tabs>
-                        </AppBar>
-                        <div className={classes.heightT}>
-                            <TabPanel value={lowPanel} index={0} dir={theme.direction}>
-                                <div dangerouslySetInnerHTML={{__html: integrationLink}}/>
-                            </TabPanel>
-                            <TabPanel value={lowPanel} index={1} dir={theme.direction} >
-                                <DataGrid rows={rows} columns={columns} pageSize={7} autoHeight={true} />
-                            </TabPanel>
-                        </div>
-                    </Grid>
-                    <Grid>
-                    {finished ?
-                        <Button variant="contained"
-                                         size="small"
-                                         color="primary"
-                                         onClick={handleClickFinished}
-                        >
-                            Завершить тест
-                        </Button>
-                    :
-                        <Button variant="contained"
-                                size="small"
-                                color="primary"
-                                className={classes.btnH}
-                                onClick={handleClickNextTask}
-                        >
-                            Перейти к следующему заданию
-                        </Button>
-                    }
-                    </Grid>
-                </Grid>
-            </Container>
+                </Container>
+                :
+            <div>task undef</div>
             }
         </div>
     );

@@ -252,7 +252,7 @@ export default function Reg() {
                                         />
                                         <CardContent className={classes.cardContent}>
                                             <Typography gutterBottom variant="h5" component="h2">
-                                                {test.level}
+                                                Уровень {test.level}
                                             </Typography>
                                             <Typography gutterBottom variant="h5" component="h2">
                                                 {test.name}
