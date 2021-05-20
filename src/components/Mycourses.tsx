@@ -150,6 +150,7 @@ export default function MyCourses() {
                             <Grid item>
                                 Уровень знаний<br/>
                                 {userAPI.levelBrains}<br/><br/>
+                                <Link color="primary" href='/editing'>Создать тест</Link>
                                 <Link color="primary" href='/editing'>Редактировать профиль</Link>
                             </Grid>
                         </Grid>

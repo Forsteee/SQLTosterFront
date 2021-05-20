@@ -13,6 +13,7 @@ import {login, logout, selectUser} from "./features/userSlice";
 import Editing from "./components/Editing";
 import axios from "axios";
 import Course from "./components/Course";
+import CreateTest from "./components/CreateTest";
 
 function App() {
     const dispatch = useDispatch();
@@ -56,6 +57,7 @@ function App() {
                 <Route path='/test/:testId' component={Test}/>
                 <Route path='/editing' component={Editing}/>
                 <Route path='/course' component={Course}/>
+                <Route path='/createTest' component={CreateTest}/>
             </>
         </Layout>
     );

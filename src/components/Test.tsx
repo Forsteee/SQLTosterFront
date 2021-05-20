@@ -330,6 +330,8 @@ function Test(props: TestProps) {
                             <Grid container spacing={3} className={classes.faq}>
                                 <Grid item xs={4}>
                                     <Paper elevation={3} className={classes.ptpl}>
+                                        <ListItemText primary={tasks![(numbersTask - 1)].name}/>
+                                        <Divider/>
                                         <ListItemText primary={tasks![(numbersTask - 1)].description}/>
                                         <Divider/>
                                         <ListItemText primary={tasks![(numbersTask - 1)].recommendation}/>
