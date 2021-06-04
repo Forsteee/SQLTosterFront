@@ -119,9 +119,21 @@ function Test(props: TestProps) {
     }, [userAuth])
 
     useEffect(() => {
-        loadTasks();
-        loadingDBPicture();
+        let cleanupFunction = false;
+        const fetchData = async () => {
+            try {
+                await loadTasks();
+                await loadingDBPicture();
+            } catch (e) {
+                console.error(e.message)
+            }
+        };
+        fetchData();
+        /*loadTasks();
+        loadingDBPicture();*/
+        return () => {cleanupFunction = true};
     }, [])
+
 
     const loadingDBPicture = async () => {
             await axios.get(`http://localhost:3001/tests/${params.testId}`).then(function (response) {
@@ -210,23 +222,26 @@ function Test(props: TestProps) {
     };
 
 
-    const bodyParameters = {
-        request: answer,
-    };
     const [res, setRes] = useState('');
     const [columns, setColumns] = useState<GridColDef[]>([]);// колонки ебать для таблицы
     const [rows, setRows] = useState<any>([]);// строки ебать для таблицы
     const [eqPercent,setEqPersent] = useState();
+    const [answerPercent,setAnswerPercent] = useState();
     const [showStandart,setShowStandart] = useState(true);
 
     const handleClickReq = async () => {
+        const bodyParameters = {
+            request: answer,
+            standart: tasks![(numbersTask - 1)].standard,
+            task: tasks![(numbersTask - 1)].id
+        };
         await axiosAuth.post('/testingapi/req',
             bodyParameters
             )
             .then(function (response) {
-                if (isObject(response.data[0])) {
+                if (isObject(response.data.response[0])) {
                     // заполнение колонок
-                    const columnsFromRes = Object.keys(response.data[0]);
+                    const columnsFromRes = Object.keys(response.data.response[0]);
                     let columnsForColDef: GridColDef[] = [];
                     columnsFromRes.forEach((item: string) => {
                         columnsForColDef.push({field: item, headerName: item})
@@ -234,7 +249,9 @@ function Test(props: TestProps) {
                     })
                     setColumns(columnsForColDef);
                     //заполнение строк
-                    setRows(Object.values(response.data));
+                    setRows(Object.values(response.data.response));
+                    setEqPersent(response.data.eqPercent);
+                    setAnswerPercent(response.data.answerPercent);
                     setShowStandart(false);
                     setOpenSnackS(true);
                 } else {
@@ -246,7 +263,7 @@ function Test(props: TestProps) {
                 console.log(error);
                 setOpenSnackEr(true);
             })
-        await axiosAuth.post('/testingapi/eqPercent',
+        /*await axiosAuth.post('/testingapi/eqPercent',
             {
                 request: answer,
                 standart: tasks![(numbersTask - 1)].standard,
@@ -257,7 +274,7 @@ function Test(props: TestProps) {
             }).catch(function (error) {
                 console.log(error);
                 setOpenSnackEr(true);
-            })
+            })*/
     }
 
     // кнопка на переход к след заданию

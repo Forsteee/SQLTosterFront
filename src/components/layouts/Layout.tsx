@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import  NavMenu  from './Header';
 import  Footer  from './Footer';
 const mainC = {
-    minHeight: '90vh',
+    minHeight: '100vh',
 }
 const root = {
 
