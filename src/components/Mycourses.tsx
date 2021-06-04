@@ -66,10 +66,10 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const imgsrc = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa57gjoZOz-fWpMTybuMsAaow0Wv5Sa-u6td_00_bIsDB42hjNgsIlYT92iVzX8Jp3Xmo&usqp=CAU';
-const nameforPr = 'SQL Lite Mode';
-const levelI = '4/8';
-const progress = 50;
+const imgsrc = 'https://english-verbs.ru/words/select.jpeg';
+const nameforPr = 'SELECT - Тест';
+const levelI = '1/8';
+const progress = 12.5;
 
 function CircularProgressWithLabel(props: CircularProgressProps & { value: number }) {
     return (
@@ -150,7 +150,7 @@ export default function MyCourses() {
                             <Grid item>
                                 Уровень знаний<br/>
                                 {userAPI.levelBrains}<br/><br/>
-                                <Link color="primary" href='/editing'>Создать тест</Link>
+                                <Link color="primary" href='/editing'>Создать тест</Link><br/>
                                 <Link color="primary" href='/editing'>Редактировать профиль</Link>
                             </Grid>
                         </Grid>
