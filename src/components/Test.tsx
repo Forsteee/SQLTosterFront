@@ -332,7 +332,7 @@ function Test(props: TestProps) {
                                     <Paper elevation={3} className={classes.ptpl}>
                                         <ListItemText primary={tasks![(numbersTask - 1)].name}/>
                                         <Divider/>
-                                        <ListItemText primary={tasks![(numbersTask - 1)].description}/>
+                                        <ListItemText primary={tasks![(numbersTask - 1)].formulation}/>
                                         <Divider/>
                                         <ListItemText primary={tasks![(numbersTask - 1)].recommendation}/>
                                     </Paper>
@@ -348,7 +348,7 @@ function Test(props: TestProps) {
                                             aria-label="full width tabs example"
                                         >
                                             <Tab label="Поле ввода" {...a11yProps(0)} />
-                                            <Tab disabled={showStandart} label="Эталон" {...a11yProps(1)} />
+                                            <Tab disabled={showStandart} label="Рекомендованное написание" {...a11yProps(1)} />
                                         </Tabs>
                                     </AppBar>
                                     <div className={classes.heightT}>
@@ -370,7 +370,7 @@ function Test(props: TestProps) {
                                             >
                                                 {eqPercent ?
                                                     <ListItemText
-                                                        primary={`Процент совпадения с эталоном: ${Math.round(eqPercent!)} %`}/>
+                                                        primary={`Процент совпадения с рекомендованным написанием: ${Math.round(eqPercent!)} %`}/>
                                                     :
                                                     <div></div>
                                                 }
