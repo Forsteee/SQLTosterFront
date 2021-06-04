@@ -150,14 +150,14 @@ export default function MyCourses() {
                             <Grid item>
                                 Уровень знаний<br/>
                                 {userAPI.levelBrains}<br/><br/>
-                                <Link color="primary" href='/editing'>Создать тест</Link>
+                                <Link color="primary" href='/createTest'>Создать тест</Link><br/>
                                 <Link color="primary" href='/editing'>Редактировать профиль</Link>
                             </Grid>
                         </Grid>
                     </Paper>
                     <Container maxWidth="sm" className={classes.main}>
                         <Typography component="div" variant="h5" className={classes.headT}>
-                            Мои курсы
+                            Мои тесты
                         </Typography>
                             <Paper className={classes.paper} elevation={3}>
                                 <Grid container spacing={3} direction="row" justify="space-between" alignItems="center">

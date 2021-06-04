@@ -411,8 +411,8 @@ function Test(props: TestProps) {
                                     variant="fullWidth"
                                     aria-label="full width tabs example"
                                 >
-                                    <Tab label="Схема базы данных" {...a11yProps(0)} />
-                                    <Tab label="Результат запроса" {...a11yProps(1)} />
+                                    <Tab label="Мои тесты" {...a11yProps(0)} />
+                                    <Tab label="Созданные тесты" {...a11yProps(1)} />
                                 </Tabs>
                             </AppBar>
                             <div className={classes.heightT}>

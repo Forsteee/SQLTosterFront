@@ -214,7 +214,17 @@ export default function Editing(){
                                 className={classes.editInput}
                                 startIcon={<DeleteIcon />}
                             >
-                                Delete
+                                Удалить
+                            </Button>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="outlined"
+                                color="secondary"
+                                className={classes.editBtn}
+                                onClick = {Open}
+                            >
+                                Удалить
                             </Button>
                         </label>
                     </div>
