@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, createStyles, useTheme, Theme } from '@material-ui/core/styles';
 import HeaderForProfile from "./layouts/Headerforprofile";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -16,6 +16,9 @@ import {useSelector} from "react-redux";
 import {selectUser} from "../features/userSlice";
 import axios from "axios";
 import {IUserForHeader} from "./interfaces/IUserForHeader";
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -31,9 +34,9 @@ const useStyles = makeStyles((theme: Theme) =>
         paper: {
             padding: theme.spacing(2),
             textAlign: 'center',
+            alignItems:'center',
             color: theme.palette.text.secondary,
             marginTop:'3%',
-
         },
         imgP:{
             margin: 'auto',
@@ -47,6 +50,10 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         nameforP:{
             marginLeft:'5px',
+        },
+        tabs:{
+          width: '600px',
+            marginLeft: '12%',
         },
         submit: {
             margin: theme.spacing(3, 0, 2),
@@ -65,6 +72,40 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
+
+interface TabPanelProps {
+    children?: React.ReactNode;
+    dir?: string;
+    index: any;
+    value: any;
+}
+
+function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`full-width-tabpanel-${index}`}
+            aria-labelledby={`full-width-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box p={3}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+
+function a11yProps(index: any) {
+    return {
+        id: `full-width-tab-${index}`,
+        'aria-controls': `full-width-tabpanel-${index}`,
+    };
+}
 
 const imgsrc = 'https://english-verbs.ru/words/select.jpeg';
 const nameforPr = 'SELECT - Тест';
@@ -95,13 +136,23 @@ function CircularProgressWithLabel(props: CircularProgressProps & { value: numbe
 
 export default function MyCourses() {
     const classes = useStyles();
-
+    const theme = useTheme();
     const user = useSelector(selectUser);// или отсюда данные юзера или аксиосом
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const [value, setValue] = React.useState(0);
+
     const [userAPI, setUserAPI] = useState<IUserForHeader>();
+
+    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setValue(newValue);
+    };
+
+    const handleChangeIndex = (index: number) => {
+        setValue(index);
+    };
 
     useEffect(()=>{
         loaduser();
@@ -151,40 +202,61 @@ export default function MyCourses() {
                                 Уровень знаний<br/>
                                 {userAPI.levelBrains}<br/><br/>
                                 <Link color="primary" href='/createTest'>Создать тест</Link><br/>
-                                <Link color="primary" href='/editing'>Создать тест</Link><br/>
                                 <Link color="primary" href='/editing'>Редактировать профиль</Link>
                             </Grid>
                         </Grid>
                     </Paper>
-                    <Container maxWidth="sm" className={classes.main}>
+                    <Container maxWidth="md" className={classes.main}>
                         <Typography component="div" variant="h5" className={classes.headT}>
                             Мои тесты
                         </Typography>
-                            <Paper className={classes.paper} elevation={3}>
-                                <Grid container spacing={3} direction="row" justify="space-between" alignItems="center">
-                                    <Grid item>
-                                        <div className={classes.logotype}>
-                                            <Link color="inherit" href='/'><Avatar src={imgsrc} variant="square" className={classes.imgP} /></Link>
-                                            <Typography variant="h6" className={classes.nameforP}>
-                                                <Link color="inherit" href='/' underline='none'><Hidden xsDown>{nameforPr}</Hidden></Link>
-                                            </Typography>
-                                        </div>
-                                    </Grid>
-                                    <Grid item>
-                                        Пройдено {levelI}<br/>
-                                        <CircularProgressWithLabel value={progress} /><br/>
-                                        <Button
-                                            type="submit"
-                                            fullWidth
-                                            variant="outlined"
-                                            color="default"
-                                            className={classes.submit}
+                                    <AppBar position="static" color="default">
+                                        <Tabs
+                                            value={value}
+                                            onChange={handleChange}
+                                            indicatorColor="primary"
+                                            textColor="primary"
+                                            variant="fullWidth"
+                                            aria-label="full width tabs example"
                                         >
-                                            Продолжить
-                                        </Button>
-                                    </Grid>
-                                </Grid>
-                            </Paper>
+                                            <Tab label="Мои тесты" {...a11yProps(0)} />
+                                            <Tab label="Созданные тесты" {...a11yProps(1)} />
+                                        </Tabs>
+                                    </AppBar>
+                    </Container>
+                    <Container maxWidth="md" className={classes.main}>
+                                    <TabPanel value={value} index={0} dir={theme.direction} >
+                                        <div className={classes.tabs}>
+                                        <Paper className={classes.paper} elevation={3}>
+                                        <Grid container spacing={3} direction="row" justify="space-between" alignItems="center">
+                                        <Grid item>
+                                            <div className={classes.logotype}>
+                                                <Link color="inherit" href='/'><Avatar src={imgsrc} variant="square" className={classes.imgP} /></Link>
+                                                <Typography variant="h6" className={classes.nameforP}>
+                                                    <Link color="inherit" href='/' underline='none'><Hidden xsDown>{nameforPr}</Hidden></Link>
+                                                </Typography>
+                                            </div>
+                                        </Grid>
+                                        <Grid item>
+                                            Пройдено {levelI}<br/>
+                                            <CircularProgressWithLabel value={progress} /><br/>
+                                            <Button
+                                                type="submit"
+                                                fullWidth
+                                                variant="outlined"
+                                                color="default"
+                                                className={classes.submit}
+                                            >
+                                                Продолжить
+                                            </Button>
+                                        </Grid>
+                                        </Grid>
+                                        </Paper>
+                                        </div>
+                                    </TabPanel>
+                                    <TabPanel value={value} index={1} dir={theme.direction}>
+
+                                    </TabPanel>
                     </Container>
                 </Container>
             }
