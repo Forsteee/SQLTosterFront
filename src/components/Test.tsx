@@ -21,6 +21,7 @@ import {ITasks} from "./interfaces/ITasks";
 import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -112,7 +113,9 @@ function Test(props: TestProps) {
     const [finished, setFinished] = useState<boolean>(false); // отметка о завершении
     const [countTasks, setCountTasks] = useState<number>(1); // количество заданий в тесте
     const [testingUser, setTestingUser] = useState<{ id: number, marker: number, finished: boolean }>();// тут лежит закладка и отметка о завершении
-    const [integrationLink,setIntegrationLink] = useState<string>('');
+    const [integrationLink, setIntegrationLink] = useState<string>('');
+    const operators = ['SELECT', 'FROM', 'WHERE'];
+
     useEffect(() => {
         signUpForTest();
         loadTesting();
@@ -131,16 +134,18 @@ function Test(props: TestProps) {
         fetchData();
         /*loadTasks();
         loadingDBPicture();*/
-        return () => {cleanupFunction = true};
+        return () => {
+            cleanupFunction = true
+        };
     }, [])
 
 
     const loadingDBPicture = async () => {
-            await axios.get(`http://localhost:3001/tests/${params.testId}`).then(function (response) {
-                setIntegrationLink(response.data.integrationLink);
-            }).catch(function (error) {
-                console.log(error.message)
-            })
+        await axios.get(`http://localhost:3001/tests/${params.testId}`).then(function (response) {
+            setIntegrationLink(response.data.integrationLink);
+        }).catch(function (error) {
+            console.log(error.message)
+        })
     }
     // добавляет запись в бд (привязвает пользователя к тесту и ставит закладку)
     // если пользователь с тестом уже записаны в бд то ничего не делает
@@ -182,8 +187,8 @@ function Test(props: TestProps) {
                     setTestingUser(response.data);
                     setNumberTask(response.data.marker);
                     setFinished(response.data.finished);
-                    if(response.data.finished){
-                    window.location.assign('http://localhost:3000/')
+                    if (response.data.finished) {
+                        window.location.assign('http://localhost:3000/')
                     }
                 }).catch(function (error) {
                     console.log(error.message);
@@ -225,9 +230,9 @@ function Test(props: TestProps) {
     const [res, setRes] = useState('');
     const [columns, setColumns] = useState<GridColDef[]>([]);// колонки ебать для таблицы
     const [rows, setRows] = useState<any>([]);// строки ебать для таблицы
-    const [eqPercent,setEqPersent] = useState();
-    const [answerPercent,setAnswerPercent] = useState();
-    const [showStandart,setShowStandart] = useState(true);
+    const [eqPercent, setEqPersent] = useState();
+    const [answerPercent, setAnswerPercent] = useState();
+    const [showStandart, setShowStandart] = useState(true);
 
     const handleClickReq = async () => {
         const bodyParameters = {
@@ -237,7 +242,7 @@ function Test(props: TestProps) {
         };
         await axiosAuth.post('/testingapi/req',
             bodyParameters
-            )
+        )
             .then(function (response) {
                 if (isObject(response.data.response[0])) {
                     // заполнение колонок
@@ -365,12 +370,13 @@ function Test(props: TestProps) {
                                             aria-label="full width tabs example"
                                         >
                                             <Tab label="Поле ввода" {...a11yProps(0)} />
-                                            <Tab disabled={showStandart} label="Рекомендованное написание" {...a11yProps(1)} />
+                                            <Tab disabled={showStandart}
+                                                 label="Рекомендованное написание" {...a11yProps(1)} />
                                         </Tabs>
                                     </AppBar>
                                     <div className={classes.heightT}>
                                         <TabPanel value={upperPanel} index={0} dir={theme.direction}>
-                                            <TextField
+                                            {/*<TextField
                                                 id=""
                                                 multiline
                                                 rows={5}
@@ -379,6 +385,25 @@ function Test(props: TestProps) {
                                                 value={answer}
                                                 onChange={handleChangeAnswer}
                                                 fullWidth
+                                            />*/}
+                                            <Autocomplete
+                                                //multiple
+                                                options={operators}
+                                                renderInput={(params) => (
+                                                    <div ref={params.InputProps.ref}>
+                                                        <TextField
+                                                            multiline
+                                                            rows={5}
+                                                            placeholder="Поле ввода"
+                                                            variant="outlined"
+                                                            /*value={answer}
+                                                            onChange={handleChangeAnswer}*/
+                                                            fullWidth
+                                                            //style={{ width: 200 }}
+                                                            {...params.inputProps}
+                                                        />
+                                                    </div>
+                                                )}
                                             />
                                             <Grid
                                                 container
@@ -464,7 +489,7 @@ function Test(props: TestProps) {
                     </Grid>
                 </Container>
                 :
-            <div>task undef</div>
+                <div>task undef</div>
             }
         </div>
     );
