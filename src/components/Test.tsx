@@ -21,7 +21,11 @@ import {ITasks} from "./interfaces/ITasks";
 import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextAutoComplite from "./layouts/TextAutoComplite";
+import 'react-autocomplete-input/dist/bundle.css';
+import TextInput from 'react-autocomplete-input';
+import AutocompleteTextField from "./text/AutoCompleteTextField";
+
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -199,6 +203,7 @@ function Test(props: TestProps) {
     const [answer, setAnswer] = React.useState('');// ответ пользователя
 
     const handleChangeAnswer = (event: React.ChangeEvent<HTMLInputElement>) => {
+
         setAnswer(event.target.value);
     };
 
@@ -376,7 +381,27 @@ function Test(props: TestProps) {
                                     </AppBar>
                                     <div className={classes.heightT}>
                                         <TabPanel value={upperPanel} index={0} dir={theme.direction}>
-                                            {/*<TextField
+                                            {/*<TextAutoComplite/>*/}
+                                            {/*<AutocompleteTextField
+                                                trigger={''}
+                                                spacer={" "}
+                                                spaceRemovers={[',', '.', '!', '?']}
+                                                requestOnlyIfNoOptions={true}
+                                                regex={'^[a-zA-Z0-9\-_]+$'}
+                                                disabled={false}
+                                                //onRequestOptions={() => {}}
+                                                options={operators}
+                                            />*/}
+                                            <TextInput
+                                                trigger={['',' ']}
+                                                spacer={[" "]}
+                                                spaceRemovers={[',', '.', '!', '?']}
+                                                requestOnlyIfNoOptions={true}
+                                                regex={'^[a-zA-Z0-9\-_]+$'}
+                                                disabled={false}
+                                                //onRequestOptions={() => {}}
+                                                options={operators} />
+                                           {/* <TextField
                                                 id=""
                                                 multiline
                                                 rows={5}
@@ -386,7 +411,7 @@ function Test(props: TestProps) {
                                                 onChange={handleChangeAnswer}
                                                 fullWidth
                                             />*/}
-                                            <Autocomplete
+                                            {/*<Autocomplete
                                                 //multiple
                                                 options={operators}
                                                 renderInput={(params) => (
@@ -396,15 +421,15 @@ function Test(props: TestProps) {
                                                             rows={5}
                                                             placeholder="Поле ввода"
                                                             variant="outlined"
-                                                            /*value={answer}
-                                                            onChange={handleChangeAnswer}*/
+                                                            //value={answer}
+                                                            //onChange={handleChangeAnswer}
                                                             fullWidth
                                                             //style={{ width: 200 }}
                                                             {...params.inputProps}
                                                         />
                                                     </div>
                                                 )}
-                                            />
+                                            />*/}
                                             <Grid
                                                 container
                                                 direction="row"

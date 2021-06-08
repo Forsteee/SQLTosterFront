@@ -19,7 +19,6 @@ import { autoPlay } from 'react-swipeable-views-utils';
 import MobileStepper from '@material-ui/core/MobileStepper';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import {Route} from "react-router";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -239,7 +238,6 @@ export default function Reg() {
                 <Typography component="div" variant="h5" className={classes.heading}>
                     Онлайн-курсы
                 </Typography>
-
                     <Container className={classes.cardGrid} maxWidth="md">
                         <Grid container spacing={4}>
                             {loading && !error && allTests.map(test =>
