@@ -12,6 +12,10 @@ import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
+import DeleteIcon from "@material-ui/icons/Delete";
+import {AccountCircle, AddCircle} from "@material-ui/icons";
+import {Backdrop, Fade, Modal} from "@material-ui/core";
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -43,6 +47,20 @@ const useStyles = makeStyles((theme: Theme) =>
             margin:'5px',
             marginTop:'3%',
         },
+        cBtn:{
+          color:'#54AD54'
+        },
+        modal: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        paper: {
+            backgroundColor: theme.palette.background.paper,
+            border: '2px solid #000',
+            boxShadow: theme.shadows[5],
+            padding: theme.spacing(2, 4, 3),
+        },
         submit: {
             margin: theme.spacing(3, 0, 2),
             backgroundColor:'#54AD54',
@@ -73,7 +91,15 @@ export default function CreateTest(){
     const [level,setLevel] = React.useState<any>(10);
     const [type,setType] = React.useState<any>(10);
     const [disableBtn, setDisableBtn] = React.useState<any>(true);
-    /*const [select, setSelect] = React.useState<any>(false);*/
+    const [openModal, setOpenModal] = React.useState(false);
+
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    }
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    }
 
     let frame:string[] = [
         "<iframe width=\"100%\" height=\"500px\" style=\"box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); border-radius:15px;\" allowtransparency=\"true\" allowfullscreen=\"true\" scrolling=\"no\" title=\"Embedded DrawSQL IFrame\" frameborder=\"0\" src=\"https://drawsql.app/sqltoster/diagrams/flights/embed\"></iframe>",
@@ -237,20 +263,79 @@ export default function CreateTest(){
                 variant="outlined"
                 color="default"
                 className={classes.submit}
+                href="/createTask"
             >
                 Создать задание
             </Button>
-            <TextField
-                className={classes.inputBColor}
-                variant="outlined"
-                multiline
-                rows={5}
-                fullWidth
-                id="team"
-                label="Список участников"
-                name="team"
-                autoComplete="team"
-            />
+            <Grid >
+                <Grid item>
+                    <TextField
+                        className={classes.inputBColor}
+                        variant="outlined"
+                        multiline
+                        rows={5}
+                        fullWidth
+                        id="team"
+                        label="Список участников"
+                        name="team"
+                        autoComplete="team"
+                    />
+                </Grid>
+                <Grid item >
+                    <IconButton aria-label="delete" className={classes.cBtn} onClick={handleOpenModal}>
+                        <AddCircle fontSize="large"/>
+                    </IconButton>
+                    <Modal
+                        aria-labelledby="title"
+                        aria-describedby="description"
+                        className={classes.modal}
+                        open={openModal}
+                        onClose={handleCloseModal}
+                        closeAfterTransition
+                        BackdropComponent={Backdrop}
+                        BackdropProps={{
+                            timeout: 500,
+                        }}
+                    >
+                        <Fade in={openModal}>
+                            <div className={classes.paper}>
+                                <h2 id="team-modal-title">Добавление участников на тест</h2>
+                                <p id="team-modal-description">Введите "Логин" или "Email" и нажмите "Добавить"</p>
+                                <TextField
+                                    id="input-with-icon-textfield"
+                                    label=""
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <AccountCircle />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justify="flex-end"
+                                >
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    id="createTask"
+                                    variant="outlined"
+                                    color="default"
+                                    className={classes.submit}
+                                >
+                                    Добавить
+                                </Button>
+                                </Grid>
+                            </div>
+                        </Fade>
+                    </Modal>
+                    <IconButton color="secondary" aria-label="delete">
+                        <DeleteIcon fontSize="large"/>
+                    </IconButton>
+                </Grid>
+            </Grid>
         </Container>
     )
 }

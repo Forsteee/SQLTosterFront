@@ -14,6 +14,7 @@ import Editing from "./components/Editing";
 import axios from "axios";
 import Course from "./components/Course";
 import CreateTest from "./components/CreateTest";
+import CreateTask from "./components/CreateTask";
 
 function App() {
     const dispatch = useDispatch();
@@ -58,6 +59,7 @@ function App() {
                 <Route path='/editing' component={Editing}/>
                 <Route path='/course' component={Course}/>
                 <Route path='/createTest' component={CreateTest}/>
+                <Route path='/createTask' component={CreateTask}/>
             </>
         </Layout>
     );
