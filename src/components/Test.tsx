@@ -21,10 +21,8 @@ import {ITasks} from "./interfaces/ITasks";
 import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
-import TextAutoComplite from "./layouts/TextAutoComplite";
 import 'react-autocomplete-input/dist/bundle.css';
 import TextInput from 'react-autocomplete-input';
-import AutocompleteTextField from "./text/AutoCompleteTextField";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,24 +32,28 @@ const useStyles = makeStyles((theme: Theme) =>
         main:{
         },
         faq:{
-            padding: theme.spacing(1,0,1,0),
+            //padding: theme.spacing(1,0,1,0),
         },
         rightB:{
             textAlign: 'right',
         },
         heightT:{
-            height:'228px',
+            height:'50%',
         },
         borderC:{
         },
         btnH:{
-            marginTop:'35%',
+            //marginTop:'35%',
         },
         contH:{
         },
         ptpl:{
             paddingTop: '7px',
             paddingLeft: '7px',
+        },
+        autoCInp:{
+            width:'100%',
+            height:'100%',
         }
     }),
 );
@@ -202,7 +204,7 @@ function Test(props: TestProps) {
 
     const [answer, setAnswer] = React.useState('');// ответ пользователя
 
-    const handleChangeAnswer = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChangeAnswer = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 
         setAnswer(event.target.value);
     };
@@ -220,6 +222,7 @@ function Test(props: TestProps) {
     };
 
     const [openSnackS, setOpenSnackS] = React.useState(false);
+    const [openSnackWin, setOpenSnackWin] = React.useState(false);
     const [openSnackEr, setOpenSnackEr] = React.useState(false);
     const [openSnackErToReq, setOpenSnackErToReq] = React.useState(false);
     const handleCloseSnack = (event?: React.SyntheticEvent, reason?: string) => {
@@ -227,6 +230,7 @@ function Test(props: TestProps) {
             return;
         }
         setOpenSnackS(false);
+        setOpenSnackWin(false);
         setOpenSnackEr(false);
         setOpenSnackErToReq(false);
     };
@@ -257,13 +261,18 @@ function Test(props: TestProps) {
                         columnsForColDef.push({field: item, headerName: item})
                         console.log(item);
                     })
-                    setColumns(columnsForColDef);
+                    setColumns(columnsForColDef);// колонки ответа
                     //заполнение строк
-                    setRows(Object.values(response.data.response));
-                    setEqPersent(response.data.eqPercent);
-                    setAnswerPercent(response.data.answerPercent);
+                    setRows(Object.values(response.data.response));// строки ответа
+                    setEqPersent(response.data.eqPercent);// процент совпадения с возможным ответом
+                    setAnswerPercent(response.data.answerPercent);// процент совпадения с верным набором данным (ответ)
+                    if(response.data.answerPercent == 100){
+                        setOpenSnackWin(true);
+                    }else{
+                        setOpenSnackS(true);
+                    }
                     setShowStandart(false);
-                    setOpenSnackS(true);
+
                 } else {
                     //сообщение об ошибке
                     setRes(response.data.message);
@@ -336,7 +345,12 @@ function Test(props: TestProps) {
                     >
                         <Snackbar open={openSnackS} autoHideDuration={6000} onClose={handleCloseSnack}>
                             <Alert onClose={handleCloseSnack} severity="success">
-                                Запрос выполнен, результат во вкладке 'Результат запроса'!
+                                Абсолютно верно!
+                            </Alert>
+                        </Snackbar>
+                        <Snackbar open={openSnackS} autoHideDuration={6000} onClose={handleCloseSnack}>
+                            <Alert onClose={handleCloseSnack} severity="success">
+                                Запрос выполнен, результат во вкладке 'Результат запроса', процент совпадения с ответом: {answerPercent} % !
                             </Alert>
                         </Snackbar>
                         <Snackbar open={openSnackEr} autoHideDuration={6000} onClose={handleCloseSnack}>
@@ -353,6 +367,29 @@ function Test(props: TestProps) {
                                 {res}
                             </Alert>
                         </Snackbar>
+                        <Grid item className={classes.heightT}>
+                            <AppBar position="static" color="default">
+                                <Tabs
+                                    value={lowPanel}
+                                    onChange={handleChangeLowPanel}
+                                    indicatorColor="primary"
+                                    textColor="primary"
+                                    variant="fullWidth"
+                                    aria-label="full width tabs example"
+                                >
+                                    <Tab label="Схема бд" {...a11yProps(0)} />
+                                    <Tab label="Результат" {...a11yProps(1)} />
+                                </Tabs>
+                            </AppBar>
+                            <div className={classes.heightT}>
+                                <TabPanel value={lowPanel} index={0} dir={theme.direction}>
+                                    <div dangerouslySetInnerHTML={{__html: integrationLink}}/>
+                                </TabPanel>
+                                <TabPanel value={lowPanel} index={1} dir={theme.direction}>
+                                    <DataGrid rows={rows} columns={columns} pageSize={7} autoHeight={true}/>
+                                </TabPanel>
+                            </div>
+                        </Grid>
                         <Grid item>
                             <Grid container spacing={3} className={classes.faq}>
                                 <Grid item xs={4}>
@@ -376,22 +413,11 @@ function Test(props: TestProps) {
                                         >
                                             <Tab label="Поле ввода" {...a11yProps(0)} />
                                             <Tab disabled={showStandart}
-                                                 label="Рекомендованное написание" {...a11yProps(1)} />
+                                                 label="Возможный ответ" {...a11yProps(1)} />
                                         </Tabs>
                                     </AppBar>
                                     <div className={classes.heightT}>
                                         <TabPanel value={upperPanel} index={0} dir={theme.direction}>
-                                            {/*<TextAutoComplite/>*/}
-                                            {/*<AutocompleteTextField
-                                                trigger={''}
-                                                spacer={" "}
-                                                spaceRemovers={[',', '.', '!', '?']}
-                                                requestOnlyIfNoOptions={true}
-                                                regex={'^[a-zA-Z0-9\-_]+$'}
-                                                disabled={false}
-                                                //onRequestOptions={() => {}}
-                                                options={operators}
-                                            />*/}
                                             <TextInput
                                                 trigger={['',' ']}
                                                 spacer={[" "]}
@@ -400,36 +426,11 @@ function Test(props: TestProps) {
                                                 regex={'^[a-zA-Z0-9\-_]+$'}
                                                 disabled={false}
                                                 //onRequestOptions={() => {}}
-                                                options={operators} />
-                                           {/* <TextField
-                                                id=""
-                                                multiline
-                                                rows={5}
-                                                placeholder="Поле ввода"
-                                                variant="outlined"
+                                                className={classes.autoCInp}
+                                                rows={7}
+                                                onChange={(v:any)=>setAnswer(v)}
                                                 value={answer}
-                                                onChange={handleChangeAnswer}
-                                                fullWidth
-                                            />*/}
-                                            {/*<Autocomplete
-                                                //multiple
-                                                options={operators}
-                                                renderInput={(params) => (
-                                                    <div ref={params.InputProps.ref}>
-                                                        <TextField
-                                                            multiline
-                                                            rows={5}
-                                                            placeholder="Поле ввода"
-                                                            variant="outlined"
-                                                            //value={answer}
-                                                            //onChange={handleChangeAnswer}
-                                                            fullWidth
-                                                            //style={{ width: 200 }}
-                                                            {...params.inputProps}
-                                                        />
-                                                    </div>
-                                                )}
-                                            />*/}
+                                                options={operators} />
                                             <Grid
                                                 container
                                                 direction="row"
@@ -437,7 +438,7 @@ function Test(props: TestProps) {
                                             >
                                                 {eqPercent ?
                                                     <ListItemText
-                                                        primary={`Процент совпадения с рекомендованным написанием: ${Math.round(eqPercent!)} %`}/>
+                                                        primary={`Процент совпадения с возможным ответом: ${Math.round(eqPercent!)} %`}/>
                                                     :
                                                     <div></div>
                                                 }
@@ -467,29 +468,6 @@ function Test(props: TestProps) {
                                     </div>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                        <Grid item>
-                            <AppBar position="static" color="default">
-                                <Tabs
-                                    value={lowPanel}
-                                    onChange={handleChangeLowPanel}
-                                    indicatorColor="primary"
-                                    textColor="primary"
-                                    variant="fullWidth"
-                                    aria-label="full width tabs example"
-                                >
-                                    <Tab label="Схема бд" {...a11yProps(0)} />
-                                    <Tab label="Результат" {...a11yProps(1)} />
-                                </Tabs>
-                            </AppBar>
-                            <div className={classes.heightT}>
-                                <TabPanel value={lowPanel} index={0} dir={theme.direction}>
-                                    <div dangerouslySetInnerHTML={{__html: integrationLink}}/>
-                                </TabPanel>
-                                <TabPanel value={lowPanel} index={1} dir={theme.direction}>
-                                    <DataGrid rows={rows} columns={columns} pageSize={7} autoHeight={true}/>
-                                </TabPanel>
-                            </div>
                         </Grid>
                         <Grid>
                             {finished ?
