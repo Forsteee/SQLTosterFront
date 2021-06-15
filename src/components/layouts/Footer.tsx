@@ -32,7 +32,7 @@ export default function StickyFooter() {
     return (
             <footer className={classes.footer}>
                 <Container maxWidth="sm">
-                    <Typography variant="body1">пиу-пиу</Typography>
+                    <Typography variant="body1">ТюмГУ</Typography>
                     <Copyright />
                 </Container>
             </footer>

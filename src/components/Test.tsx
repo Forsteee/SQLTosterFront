@@ -23,6 +23,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
 import 'react-autocomplete-input/dist/bundle.css';
 import TextInput from 'react-autocomplete-input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -54,7 +58,11 @@ const useStyles = makeStyles((theme: Theme) =>
         autoCInp:{
             width:'100%',
             height:'100%',
-        }
+        },
+        formControl: {
+            margin: theme.spacing(1),
+            minWidth: 120,
+        },
     }),
 );
 
@@ -101,7 +109,7 @@ function Alert(props: AlertProps) {
 }
 
 function isObject(val: any) {
-    if (val === null) { return false;}
+    if (val === null || typeof val == "undefined") { return false;}
     return ( (typeof val === 'function') || (typeof val === 'object') );
 }
 
@@ -240,7 +248,10 @@ function Test(props: TestProps) {
     const [columns, setColumns] = useState<GridColDef[]>([]);// колонки ебать для таблицы
     const [rows, setRows] = useState<any>([]);// строки ебать для таблицы
     const [eqPercent, setEqPersent] = useState();
-    const [answerPercent, setAnswerPercent] = useState();
+    const [answerPercent, setAnswerPercent] = useState({
+        trueAnswer: undefined,
+        message: undefined
+    });
     const [showStandart, setShowStandart] = useState(true);
 
     const handleClickReq = async () => {
@@ -253,12 +264,12 @@ function Test(props: TestProps) {
             bodyParameters
         )
             .then(function (response) {
-                if (isObject(response.data.response[0])) {
+                if (isObject(response.data.response)) {
                     // заполнение колонок
                     const columnsFromRes = Object.keys(response.data.response[0]);
                     let columnsForColDef: GridColDef[] = [];
                     columnsFromRes.forEach((item: string) => {
-                        columnsForColDef.push({field: item, headerName: item})
+                        columnsForColDef.push({field: item, headerName: item, flex: 1})
                         console.log(item);
                     })
                     setColumns(columnsForColDef);// колонки ответа
@@ -266,7 +277,8 @@ function Test(props: TestProps) {
                     setRows(Object.values(response.data.response));// строки ответа
                     setEqPersent(response.data.eqPercent);// процент совпадения с возможным ответом
                     setAnswerPercent(response.data.answerPercent);// процент совпадения с верным набором данным (ответ)
-                    if(response.data.answerPercent == 100){
+                    console.log(response.data.answerPercent);
+                    if(response.data.answerPercent.trueAnswer){
                         setOpenSnackWin(true);
                     }else{
                         setOpenSnackS(true);
@@ -275,6 +287,7 @@ function Test(props: TestProps) {
 
                 } else {
                     //сообщение об ошибке
+                    console.log(response.data.message);
                     setRes(response.data.message);
                     setOpenSnackErToReq(true);
                 }
@@ -334,6 +347,11 @@ function Test(props: TestProps) {
         window.location.assign('http://localhost:3000/')
     }
 
+    const [age, setAge] = React.useState('');
+
+    const handleChangeAge = (event: React.ChangeEvent<{ value: unknown }>) => {
+        setAge(event.target.value as string);
+    };
     return (
         <div>
             {tasks ?
@@ -343,14 +361,14 @@ function Test(props: TestProps) {
                           justify="center"
                           className={classes.borderC}
                     >
-                        <Snackbar open={openSnackS} autoHideDuration={6000} onClose={handleCloseSnack}>
+                        <Snackbar open={openSnackWin} autoHideDuration={6000} onClose={handleCloseSnack}>
                             <Alert onClose={handleCloseSnack} severity="success">
                                 Абсолютно верно!
                             </Alert>
                         </Snackbar>
                         <Snackbar open={openSnackS} autoHideDuration={6000} onClose={handleCloseSnack}>
                             <Alert onClose={handleCloseSnack} severity="success">
-                                Запрос выполнен, результат во вкладке 'Результат запроса', процент совпадения с ответом: {answerPercent} % !
+                                Запрос выполнен, результат во вкладке 'Результат запроса'. {answerPercent.message}.
                             </Alert>
                         </Snackbar>
                         <Snackbar open={openSnackEr} autoHideDuration={6000} onClose={handleCloseSnack}>
@@ -378,7 +396,8 @@ function Test(props: TestProps) {
                                     aria-label="full width tabs example"
                                 >
                                     <Tab label="Схема бд" {...a11yProps(0)} />
-                                    <Tab label="Результат" {...a11yProps(1)} />
+                                    <Tab label="Таблицы БД" {...a11yProps(1)} />
+                                    <Tab label="Результат" {...a11yProps(2)} />
                                 </Tabs>
                             </AppBar>
                             <div className={classes.heightT}>
@@ -386,6 +405,22 @@ function Test(props: TestProps) {
                                     <div dangerouslySetInnerHTML={{__html: integrationLink}}/>
                                 </TabPanel>
                                 <TabPanel value={lowPanel} index={1} dir={theme.direction}>
+                                    <FormControl className={classes.formControl}>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            value={age}
+                                            onChange={handleChangeAge}
+                                        >
+                                            <MenuItem value={10}>tickets</MenuItem>
+                                            <MenuItem value={20}>flights</MenuItem>
+                                            <MenuItem value={30}>aircraft</MenuItem>
+                                            <MenuItem value={40}>passengers</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                    <DataGrid rows={rows} columns={columns} pageSize={7} autoHeight={true}/>
+                                </TabPanel>
+                                <TabPanel value={lowPanel} index={2} dir={theme.direction}>
                                     <DataGrid rows={rows} columns={columns} pageSize={7} autoHeight={true}/>
                                 </TabPanel>
                             </div>
