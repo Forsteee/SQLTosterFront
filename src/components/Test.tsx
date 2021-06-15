@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Theme, createStyles, makeStyles,useTheme  } from '@material-ui/core/styles';
+import { Theme, createStyles, makeStyles,useTheme, withStyles, WithStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -27,6 +27,12 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Dialog from '@material-ui/core/Dialog';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+import MuiDialogActions from '@material-ui/core/DialogActions';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -65,6 +71,52 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
+const styles = (theme: Theme) =>
+    createStyles({
+        root: {
+            margin: 0,
+            padding: theme.spacing(2),
+        },
+        closeButton: {
+            position: 'absolute',
+            right: theme.spacing(1),
+            top: theme.spacing(1),
+            color: theme.palette.grey[500],
+        },
+    });
+
+interface DialogTitleProps extends WithStyles<typeof styles> {
+    id: string;
+    children: React.ReactNode;
+    onClose: () => void;
+}
+
+const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
+    const { children, classes, onClose, ...other } = props;
+    return (
+        <MuiDialogTitle disableTypography className={classes.root} {...other}>
+            <Typography variant="h6">{children}</Typography>
+            {onClose ? (
+                <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+                    <CloseIcon />
+                </IconButton>
+            ) : null}
+        </MuiDialogTitle>
+    );
+});
+
+const DialogContent = withStyles((theme: Theme) => ({
+    root: {
+        padding: theme.spacing(2),
+    },
+}))(MuiDialogContent);
+
+const DialogActions = withStyles((theme: Theme) => ({
+    root: {
+        margin: 0,
+        padding: theme.spacing(1),
+    },
+}))(MuiDialogActions);
 
 interface TestProps extends RouteComponentProps {
     testId: number;
@@ -282,14 +334,16 @@ function Test(props: TestProps) {
                         setOpenSnackWin(true);
                     }else{
                         setOpenSnackS(true);
+                        setOpen(true);
                     }
                     setShowStandart(false);
 
                 } else {
                     //сообщение об ошибке
-                    console.log(response.data.message);
+                    //console.log(response.data.message);
                     setRes(response.data.message);
-                    setOpenSnackErToReq(true);
+                    setOpenEr(true);
+                    //setOpenSnackErToReq(true);
                 }
             }).catch(function (error) {
                 console.log(error);
@@ -352,6 +406,17 @@ function Test(props: TestProps) {
     const handleChangeAge = (event: React.ChangeEvent<{ value: unknown }>) => {
         setAge(event.target.value as string);
     };
+
+    const [open, setOpen] = React.useState(false);
+
+    const [openEr, setOpenEr] = React.useState(false);
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+        setOpenEr(false);
+    };
     return (
         <div>
             {tasks ?
@@ -366,17 +431,49 @@ function Test(props: TestProps) {
                                 Абсолютно верно!
                             </Alert>
                         </Snackbar>
-                        <Snackbar open={openSnackS} autoHideDuration={6000} onClose={handleCloseSnack}>
+                        {/*<Snackbar open={openSnackS} autoHideDuration={6000} onClose={handleCloseSnack}>
                             <Alert onClose={handleCloseSnack} severity="success">
                                 Запрос выполнен, результат во вкладке 'Результат запроса'. {answerPercent.message}.
                             </Alert>
-                        </Snackbar>
+                        </Snackbar>*/}
+                        <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+                            <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+                                Сообщение
+                            </DialogTitle>
+                            <DialogContent dividers>
+                                <Typography variant = {'h6'}>Запрос выполнен, результат во вкладке 'Результат запроса'.</Typography>
+                            </DialogContent>
+                            <DialogContent dividers>
+                                <Typography variant = {'h6'}>Сообщение: {answerPercent.message}</Typography>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button autoFocus onClick={handleClose} color="primary">
+                                    <Typography variant = {'h6'}> Понял</Typography>
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                         <Snackbar open={openSnackEr} autoHideDuration={6000} onClose={handleCloseSnack}>
                             <Alert onClose={handleCloseSnack} severity="error">
-                                Уууупс, произошла ошибка!
+                                Уууупс, произошла ошибка! (что-то с сервером, попробуйте позже)
                             </Alert>
                         </Snackbar>
-                        <Snackbar
+                        <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={openEr}>
+                            <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+                                Сообщение
+                            </DialogTitle>
+                            <DialogContent dividers>
+                                <Typography variant = {'h6'}>Запрос не выполнен, синтаксическая ошибка.</Typography>
+                            </DialogContent>
+                            <DialogContent dividers>
+                                <Typography variant = {'h6'}>Ошибка: {res}</Typography>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button autoFocus onClick={handleClose} color="primary">
+                                    <Typography variant = {'h6'}> Понял</Typography>
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                        {/*<Snackbar
                             anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                             open={openSnackErToReq}
                             onClose={handleCloseSnack}
@@ -384,7 +481,7 @@ function Test(props: TestProps) {
                             <Alert onClose={handleCloseSnack} severity="error">
                                 {res}
                             </Alert>
-                        </Snackbar>
+                        </Snackbar>*/}
                         <Grid item className={classes.heightT}>
                             <AppBar position="static" color="default">
                                 <Tabs
@@ -433,7 +530,7 @@ function Test(props: TestProps) {
                                         <Divider/>
                                         <ListItemText primary={tasks![(numbersTask - 1)].formulation}/>
                                         <Divider/>
-                                        <ListItemText primary={tasks![(numbersTask - 1)].recommendation}/>
+                                        <ListItemText primary='Количество попыток: 2'/>
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={8}>
